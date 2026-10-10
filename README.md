@@ -4,42 +4,62 @@ A bilingual (English / Español) sandbox game that teaches kids to code. Pick a 
 
 ## Run it
 
-It is one static file. Open `index.html` in a browser, or serve the folder:
+You need [Node.js](https://nodejs.org) 20 or newer.
 
 ```bash
-python -m http.server 8000
+npm install
 ```
 
-Then go to http://localhost:8000. To publish it, turn on GitHub Pages (Settings → Pages → deploy from the `main` branch, root folder).
+```bash
+npm run dev
+```
+
+Then open http://localhost:5173. Other scripts: `npm test` runs the block tests, and `npm run build` makes the static site in `dist/`.
+
+### Publish on GitHub Pages
+
+The workflow in `.github/workflows/deploy.yml` tests, builds and publishes the site on every push to `main`. Turn it on once: repo **Settings → Pages → Source: GitHub Actions**.
+
+## Tech stack
+
+| Part | Tool | What it does here |
+|------|------|-------------------|
+| Frontend framework | React + Vite | Screens (pick, draw, play, lessons) and builds to static files |
+| Physics engine | Matter.js | Ragdoll joints, collisions, drag-and-fling |
+| Block coding | Google Blockly | Scratch-style blocks (Zelos renderer), toolbox categories, workspace save |
+| Drawing canvas | HTML5 Canvas API | Limb-by-limb drawing, part stickers, the stage |
 
 ## What's in it
 
-- **Pick or draw.** Three premade characters, or a 6-step drawing wizard (head, body, arms, legs). Each step clips your strokes to that part and shows the joints that will bend. You can upload a picture per part, or trace over a photo of a paper drawing.
-- **Physics sandbox.** [Matter.js](https://brm.io/matter-js/) ragdoll with drag-and-fling, toys (ball, box, balloon, plank), and gravity and bounce sliders.
-- **Code blocks.** Events (Run, key press, click, touch ground, touch toy) start scripts; actions (jump, move, spin, wave, say, spawn, gravity, explode, wait, repeat, forever) run in order. "Show as text code" turns the blocks into JavaScript-style code, with Spanish function names in ES mode.
-- **EN / ES toggle.** Every label, block and code name switches together.
+- **Pick or draw.** Three premade characters, or "Add new character": a 6-step drawing wizard (head, body, arms, legs). Each step clips your strokes to that part and shows the joints that will bend. You can upload a picture per part, or trace over a photo of a paper drawing. Finished characters are saved under My characters, in this browser only.
+- **Backgrounds.** Paper, Park, Space, Ocean or Desert, on the pick screen or above the stage.
+- **Code on the left, like Scratch.** The Blockly toolbox and your scripts sit on the left; the stage is on the right. Event blocks (Run, key press, click, touch ground, touch toy) start scripts; action blocks (jump, move, spin, wave, say, spawn, gravity, explode, wait, repeat, forever) run in order.
+- **Terminal.** Under the stage, a terminal shows every block next to the JavaScript it becomes, with Spanish function names in ES mode.
+- **Lessons.** "How the game works" has 7 cards for elementary and middle schoolers about the HTML, CSS and JavaScript behind the game.
+- **Relative sizing.** Columns are fractions of the window, the stage keeps a 16:9 shape, and blocks scale with the code pane, so it works from a big screen down to a phone held sideways.
+- **EN / ES toggle.** Every label, block, lesson and terminal name switches together.
 
 ## Design
 
 The editable Figma template lives here: https://www.figma.com/design/en67Sfnugtzp8HmcmZMedS
 
-- **Screens:**
-  - 01 Pick: premade characters, My characters with an "Add new character" card, and a background picker.
-  - 02 Draw: the limb-by-limb wizard, with a field to name the character.
-  - 03 Play: block palette and scripts on the left like Scratch; stage, background picker and a terminal on the right. The terminal shows each block next to the JavaScript it becomes.
-  - 04 / 05 How the game works: 7 kid-friendly lesson cards about the HTML, CSS and JavaScript behind the game. The English and Spanish screens are the same frame with the Copy variable mode switched.
-  - Narrower copies (tablet 1024, phone landscape 844, phone 390) show the layout reflowing. Everything sizes relative to its container (fill, min/max, wrap, Scale constraints), not fixed pixels.
-- **Components:** Button, Code Block (5 categories), Character Card (Premade / Draw own / Add new), Background Card, Scene (5 stage backgrounds), Tutorial Card (HTML / CSS / JavaScript), Terminal and Terminal Line, Part Chip, Swatch, Text Field, Language Toggle, Speech Bubble, Header.
-- **Character Parts:** a 600×600 drawing template whose part frames match `PARTS` and `JOINTS` in `index.html`. Draw a character there, export each part as PNG, and upload them in the game.
-- **Variables:** light and dark color modes that match the CSS tokens at the top of `index.html`, plus a Copy collection with EN / ES text for the lessons and terminal.
+- **Screens:** Pick, Draw, Play, and How the game works (EN and ES), plus narrower tablet and phone copies.
+- **Components:** Button, Code Block, Character Card, Background Card, Scene, Tutorial Card, Terminal, Part Chip, Swatch, Text Field, Language Toggle, Speech Bubble, Header.
+- **Character Parts:** a 600×600 drawing template whose part frames match `PARTS` and `JOINTS` in `src/character.js`. Draw a character there, export each part as PNG, and upload them in the game.
+- **Variables:** light and dark colors that match the CSS tokens at the top of `src/styles.css`, plus a Copy collection with the EN / ES lesson text.
 
-The new screens (backgrounds, saved characters, lessons, terminal) are designs; the game code doesn't have them yet.
-
-If you change a color, change it in both places: the Figma variables and the `:root` CSS tokens.
+If you change a color, change it in both places.
 
 ## Project layout
 
 ```
-index.html   the whole game: HTML, CSS and JS (Matter.js loads from cdnjs)
-README.md
+src/
+  App.jsx            screens, language, saved characters
+  components/        Pick, Draw, Play, Learn, SceneThumb
+  i18n.js            all English + Spanish text and lesson cards
+  character.js       body parts, joints, premade characters, saving
+  scenes.js          the five stage backgrounds
+  sim.js             Matter.js physics + canvas drawing
+  blocks.js          Blockly blocks, the script runner, terminal lines
+  blocks.test.js     tests for the runner and terminal (npm test)
 ```
