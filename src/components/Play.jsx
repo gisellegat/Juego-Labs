@@ -5,28 +5,39 @@ import * as BlocklyEs from "blockly/msg/es";
 import { createSim, TOYS } from "../sim.js";
 import { SCENES } from "../scenes.js";
 import { defineBlocks, toolbox, blocklyTheme, starterScripts, createRunner, terminalLines } from "../blocks.js";
+import { fmt } from "../i18n.js";
 import SceneThumb from "./SceneThumb.jsx";
 
 const KEYMAP = { " ": "space", ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down" };
 const WS_KEY = "gl-ws";
 
 // Scratch-style layout: Blockly (palette + scripts) on the left, stage + terminal on the right.
-export default function Play({ t, lang, parts, bg, setBg, onChangeChar, onLearn }) {
+// level = null is free play; otherwise a level from levels.js (the parent remounts Play per attempt)
+export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, onNext, onRetry, onChangeChar, onLearn }) {
   const stageRef = useRef(null), blocklyRef = useRef(null);
-  const ws = useRef(null), sim = useRef(null), runner = useRef(null), live = useRef({ t, lang });
+  const ws = useRef(null), sim = useRef(null), runner = useRef(null), live = useRef({});
   const [lines, setLines] = useState([]);
-  const [grav, setGrav] = useState(1);
+  const [mode, setMode] = useState("js");
+  const [grav, setGrav] = useState(level?.gravity ?? 1);
   const [bounce, setBounce] = useState(0.2);
-  live.current = { t, lang };
+  const [status, setStatus] = useState(null);
+  live.current = { t, lang, mode };
 
   // physics + runner
   useEffect(() => {
-    const s = createSim(stageRef.current, evt => ws.current && runner.current?.fire(ws.current, evt));
+    const s = createSim(stageRef.current, (evt, data) => {
+      if (evt === "win") { runner.current.stop(); setStatus({ type: "win", ...data }); onWin?.(); }
+      else if (evt === "lose") { runner.current.stop(); setStatus({ type: "lose" }); }
+      else if (evt === "needBoss") s.act.say(live.current.t.needBoss);
+      else if (evt !== "hurt" && ws.current) runner.current.fire(ws.current, evt);
+    }, level);
     sim.current = s; runner.current = createRunner(s.act);
     return () => { runner.current.stop(); s.destroy(); };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { sim.current.spawnChar(parts); }, [parts]);
-  useEffect(() => { sim.current.setScene(bg); }, [bg]);
+  useEffect(() => { if (!level) sim.current.setScene(bg); }, [bg, level]);
+  useEffect(() => { if (level) sim.current.setTitle(level[lang][0]); }, [level, lang]);
+  useEffect(() => { if (ws.current) setLines(terminalLines(ws.current, t, lang, mode)); }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Blockly workspace
   useEffect(() => {
@@ -45,7 +56,7 @@ export default function Play({ t, lang, parts, bg, setBg, onChangeChar, onLearn 
     catch { saved = null; w.clear(); Blockly.serialization.workspaces.load(starterScripts(t), w); }
     if (!saved) w.cleanUp(); // space the starter scripts out at whatever size the blocks render
     const update = () => {
-      setLines(terminalLines(w, live.current.t, live.current.lang));
+      setLines(terminalLines(w, live.current.t, live.current.lang, live.current.mode));
       try { localStorage.setItem(WS_KEY, JSON.stringify(Blockly.serialization.workspaces.save(w))); } catch { /* private mode */ }
     };
     w.addChangeListener(e => { if (!e.isUiEvent) update(); });
@@ -61,14 +72,14 @@ export default function Play({ t, lang, parts, bg, setBg, onChangeChar, onLearn 
     const state = Blockly.serialization.workspaces.save(w);
     Blockly.setLocale(lang === "es" ? BlocklyEs : BlocklyEn); defineBlocks(t);
     w.clear(); Blockly.serialization.workspaces.load(state, w); w.updateToolbox(toolbox(t));
-    setLines(terminalLines(w, t, lang));
+    setLines(terminalLines(w, t, lang, live.current.mode));
   }, [lang, t]);
 
   // keyboard
   useEffect(() => {
     const onKey = e => {
       const k = KEYMAP[e.key];
-      if (!k || e.target.closest("input,select,textarea,[contenteditable],.blocklyWidgetDiv") || blocklyRef.current?.contains(e.target)) return;
+      if (!k || e.target.closest?.("input,select,textarea,[contenteditable],.blocklyWidgetDiv") || blocklyRef.current?.contains(e.target)) return;
       e.preventDefault(); runner.current.fire(ws.current, "key", k);
     };
     addEventListener("keydown", onKey); return () => removeEventListener("keydown", onKey);
@@ -86,14 +97,32 @@ export default function Play({ t, lang, parts, bg, setBg, onChangeChar, onLearn 
         <div className="row">
           <button className="btn go big" onClick={() => fire("run")}>{t.run}</button>
           <button className="btn stop big" onClick={() => runner.current.stop()}>{t.stop}</button>
-          <button className="btn" onClick={() => { runner.current.stop(); setGrav(sim.current.setGravity(1)); sim.current.spawnChar(); }}>{t.reset}</button>
-          <button className="btn" onClick={onChangeChar}>{t.newChar}</button>
+          {level
+            ? <button className="btn" onClick={onRetry}>{t.tryAgain}</button>
+            : <button className="btn" onClick={() => { runner.current.stop(); setGrav(sim.current.setGravity(1)); sim.current.spawnChar(); }}>{t.reset}</button>}
+          <button className="btn" onClick={onMap}>{t.backToMap}</button>
+          {!level && <button className="btn" onClick={onChangeChar}>{t.newChar}</button>}
           <button className="btn yel" onClick={onLearn}>{t.learn}</button>
         </div>
-        <div className="thumbs"><b>{t.background}</b>
-          {SCENES.map(s => <button key={s} className="thumb" aria-label={t["bg_" + s]} aria-pressed={bg === s} onClick={() => setBg(s)}><SceneThumb theme={s} /></button>)}
+        {level
+          ? <p className="goal"><b>{level[lang][0]}</b> · {t.goal} {level[lang][1]}</p>
+          : <div className="thumbs"><b>{t.background}</b>
+              {SCENES.map(s => <button key={s} className="thumb" aria-label={t["bg_" + s]} aria-pressed={bg === s} onClick={() => setBg(s)}><SceneThumb theme={s} /></button>)}
+            </div>}
+        <div className="stagewrap">
+          <canvas ref={stageRef} width="960" height="540" aria-label={level ? level[lang][0] : "Playground"} />
+          {status && (
+            <div className="overlay" role="dialog" aria-label={status.type === "win" ? t.win : t.lose}>
+              <h2>{status.type === "win" ? t.win : t.lose}</h2>
+              <p>{status.type === "win" ? fmt(t.winCoins, status) : t.loseSub}</p>
+              <div className="row">
+                {status.type === "win" && onNext && <button className="btn go big" onClick={onNext}>{t.nextLevel}</button>}
+                <button className="btn" onClick={onRetry}>{status.type === "win" ? t.replay : t.tryAgain}</button>
+                <button className="btn" onClick={onMap}>{t.backToMap}</button>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="stagewrap"><canvas ref={stageRef} width="960" height="540" aria-label="Playground" /></div>
         <div className="row"><b>{t.toys}</b>
           {TOYS.map(k => <button key={k} className="btn" onClick={() => sim.current.spawnProp(k)}>+ {t[k]}</button>)}
           <button className="mini" onClick={() => sim.current.clearToys()}>{t.clearToys}</button>
@@ -107,7 +136,9 @@ export default function Play({ t, lang, parts, bg, setBg, onChangeChar, onLearn 
         </div>
         <p className="hint">{t.dragHint}</p>
         <div className="terminal" aria-label={t.terminalTitle}>
-          <div className="bar"><i style={{ background: "#ff5f57" }} /><i style={{ background: "#febc2e" }} /><i style={{ background: "#28c840" }} /><span>{t.terminalTitle}</span></div>
+          <div className="bar"><i style={{ background: "#ff5f57" }} /><i style={{ background: "#febc2e" }} /><i style={{ background: "#28c840" }} /><span>{t.terminalTitle}</span>
+            <span className="tabs" role="group">{["js", "html"].map(m => <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)}>{m === "js" ? t.tabJs : t.tabHtml}</button>)}</span>
+          </div>
           <div className="lines" aria-live="polite">
             <div className="p">$ run my-scripts</div>
             {lines.length ? lines.map((l, i) => (

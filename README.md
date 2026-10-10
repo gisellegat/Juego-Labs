@@ -34,16 +34,18 @@ The workflow in `.github/workflows/deploy.yml` tests, builds and publishes the s
 - **Pick or draw.** Three premade characters, or "Add new character": a 6-step drawing wizard (head, body, arms, legs). Each step clips your strokes to that part and shows the joints that will bend. You can upload a picture per part, or trace over a photo of a paper drawing. Finished characters are saved under My characters, in this browser only.
 - **Backgrounds.** Paper, Park, Space, Ocean or Desert, on the pick screen or above the stage.
 - **Code on the left, like Scratch.** The Blockly toolbox and your scripts sit on the left; the stage is on the right. Event blocks (Run, key press, click, touch ground, touch toy) start scripts; action blocks (jump, move, spin, wave, say, spawn, gravity, explode, wait, repeat, forever) run in order.
-- **Terminal.** Under the stage, a terminal shows every block next to the JavaScript it becomes, with Spanish function names in ES mode.
-- **Lessons.** "How the game works" has 7 cards for elementary and middle schoolers about the HTML, CSS and JavaScript behind the game.
+- **Let's play or Tutorial.** Picking or saving a character opens a popup with both choices.
+- **Adventure levels.** A Mario-style world map with 6 levels that unlock in order: walk with your arrow-key blocks, grab coins, stomp slimes, bats and a boss (land on their heads), dodge spikes and pits, say the password to open a gate, float on the moon, and touch the flag. You have 3 hearts per try. Progress is saved in this browser. Free play (the sandbox, no monsters) is on the map too.
+- **Hands-on HTML tutorial.** 7 steps where students type real HTML, see their page live, and press "Check my code" for ✓/✗ feedback (button, style, width: 100%, onclick, lists, a range slider, the game's canvas).
+- **Terminal.** Under the stage, a terminal shows every block next to its code. The JavaScript tab uses the game's short functions (Spanish names in ES mode); the HTML tab shows the same scripts as a real web page with `<canvas>`, `<button>` and `addEventListener`.
 - **Relative sizing.** Columns are fractions of the window, the stage keeps a 16:9 shape, and blocks scale with the code pane, so it works from a big screen down to a phone held sideways.
-- **EN / ES toggle.** Every label, block, lesson and terminal name switches together.
+- **EN / ES toggle.** Every label, block, level, tutorial step and terminal name switches together. `npm test` fails if any English text is missing its Spanish version.
 
 ## Design
 
 The editable Figma template lives here: https://www.figma.com/design/en67Sfnugtzp8HmcmZMedS
 
-- **Screens:** Pick, Draw, Play, and How the game works (EN and ES), plus narrower tablet and phone copies.
+- **Screens:** Pick, the Let's play / Tutorial popup, Draw, World map, Level, Play (free play), the hands-on Tutorial, and How the game works, each in English and Spanish, plus narrower tablet and phone copies.
 - **Components:** Button, Code Block, Character Card, Background Card, Scene, Tutorial Card, Terminal, Part Chip, Swatch, Text Field, Language Toggle, Speech Bubble, Header.
 - **Character Parts:** a 600×600 drawing template whose part frames match `PARTS` and `JOINTS` in `src/character.js`. Draw a character there, export each part as PNG, and upload them in the game.
 - **Variables:** light and dark colors that match the CSS tokens at the top of `src/styles.css`, plus a Copy collection with the EN / ES lesson text.
@@ -54,12 +56,14 @@ If you change a color, change it in both places.
 
 ```
 src/
-  App.jsx            screens, language, saved characters
-  components/        Pick, Draw, Play, Learn, SceneThumb
+  App.jsx            screens, language, saved characters, the Let's play / Tutorial popup, level progress
+  components/        Pick, Draw, Map (world map), Play (sandbox + levels), Tutorial, SceneThumb
   i18n.js            all English + Spanish text and lesson cards
+  levels.js          the 6 adventure levels (blocks, coins, monsters, spikes, gate, flag)
+  tutorial.js        hands-on HTML steps and the checks that grade them
   character.js       body parts, joints, premade characters, saving
   scenes.js          the five stage backgrounds
-  sim.js             Matter.js physics + canvas drawing
-  blocks.js          Blockly blocks, the script runner, terminal lines
-  blocks.test.js     tests for the runner and terminal (npm test)
+  sim.js             Matter.js physics + canvas drawing (sandbox and side-scrolling levels)
+  blocks.js          Blockly blocks, the script runner, terminal lines (JavaScript and HTML)
+  *.test.js          tests: block runner + terminal, HTML checker, English/Spanish coverage (npm test)
 ```

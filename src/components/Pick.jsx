@@ -9,7 +9,7 @@ function Preview({ parts }) {
   return <canvas ref={ref} width="270" height="585" aria-hidden="true" />;
 }
 
-export default function Pick({ t, premade, saved, choice, setChoice, bg, setBg, onAdd, onDelete, onPlay, onLearn }) {
+export default function Pick({ t, premade, saved, choice, onPick, bg, setBg, onAdd, onDelete }) {
   const isOn = c => choice.kind === c.kind && (c.kind === "saved" ? choice.id === c.id : choice.key === c.key);
   return (
     <section>
@@ -18,7 +18,7 @@ export default function Pick({ t, premade, saved, choice, setChoice, bg, setBg, 
         <h3>{t.premade}</h3>
         <div className="cards">
           {Object.keys(premade).map(k => (
-            <button key={k} className="card" aria-pressed={isOn({ kind: "premade", key: k })} onClick={() => setChoice({ kind: "premade", key: k })}>
+            <button key={k} className="card" aria-pressed={isOn({ kind: "premade", key: k })} onClick={() => onPick({ kind: "premade", key: k })}>
               <Preview parts={premade[k]} /><b>{t[k]}</b>
             </button>))}
         </div>
@@ -28,7 +28,7 @@ export default function Pick({ t, premade, saved, choice, setChoice, bg, setBg, 
         <div className="cards">
           {saved.map(ch => (
             <div key={ch.id} style={{ position: "relative", display: "grid" }}>
-              <button className="card" aria-pressed={isOn({ kind: "saved", id: ch.id })} onClick={() => setChoice({ kind: "saved", id: ch.id })}>
+              <button className="card" aria-pressed={isOn({ kind: "saved", id: ch.id })} onClick={() => onPick({ kind: "saved", id: ch.id })}>
                 <Preview parts={ch.parts} /><b>{ch.name}</b>
               </button>
               <button className="mini del" style={{ position: "absolute", top: 6, right: 6 }} aria-label={`${t.deleteChar}: ${ch.name}`} onClick={() => onDelete(ch.id)}>✕</button>
@@ -44,10 +44,6 @@ export default function Pick({ t, premade, saved, choice, setChoice, bg, setBg, 
               <SceneThumb theme={s} /><b>{t["bg_" + s]}</b>
             </button>))}
         </div>
-      </div>
-      <div className="row">
-        <button className="btn go big" onClick={onPlay}>{t.play}</button>
-        <button className="btn yel" onClick={onLearn}>{t.learn}</button>
       </div>
     </section>
   );

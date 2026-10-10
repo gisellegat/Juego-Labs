@@ -32,6 +32,17 @@ test("Spanish terminal uses Spanish function names", () => {
   assert.equal(lines[3].code, '    crear("ball");');
 });
 
+test("HTML view wraps the same blocks in a real web page", () => {
+  const lines = terminalLines(workspace("en"), T.en, "en", "html").map(l => l.code);
+  assert.equal(lines[0], '<canvas id="stage" width="960" height="540"></canvas>');
+  assert.equal(lines[2], "<script>");
+  assert.equal(lines[3], '  run.addEventListener("click", () => {');
+  assert.equal(lines[4], '    say("Hi!");');
+  assert.ok(lines.includes('  addEventListener("keydown", e => { if (e.key === " ") {'));
+  assert.ok(lines.includes("  }});"));
+  assert.equal(lines.at(-1), "</script>");
+});
+
 test("runner runs the matching script, repeats, and respects key choice", async () => {
   const calls = [];
   const act = { say: v => calls.push(["say", v]), spawn: v => calls.push(["spawn", v]), wait: () => {}, jump: v => calls.push(["jump", v]), move: v => calls.push(["move", v]) };

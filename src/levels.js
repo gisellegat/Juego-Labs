@@ -1,0 +1,43 @@
+// Adventure levels, Mario-style: walk right, grab coins, stomp monsters, reach the flag.
+// Units are stage pixels; the floor top is y = 500 and blocks are 40px tall.
+// ground: [x1, x2] floor segments (gaps are pits). platforms: [x, y, width].
+// monsters: { kind: "slime" | "bat" | "boss", x, y, range } patrol x..x+range (bats bob up and down).
+export const LEVELS = [
+  { id: 1, scene: "park", width: 2200,
+    en: ["Grassy Start", "Use your arrow-key blocks to walk right. Grab the coins and touch the flag!"],
+    es: ["Inicio con pasto", "Usa tus bloques de flechas para caminar a la derecha. ¡Toma las monedas y toca la bandera!"],
+    ground: [[0, 2200]], platforms: [[600, 380, 160], [880, 300, 160]], monsters: [],
+    coins: [[640, 340], [700, 340], [920, 260], [980, 260], [1400, 460], [1460, 460], [1520, 460]], flag: 2060 },
+  { id: 2, scene: "desert", width: 2800,
+    en: ["Hop Hills", "Jump over the pits. Land on a slime's head to stomp it!"],
+    es: ["Colinas saltarinas", "Salta los hoyos. ¡Cae sobre la cabeza de un slime para aplastarlo!"],
+    ground: [[0, 700], [900, 1500], [1700, 2800]], platforms: [[1100, 380, 200], [1950, 360, 160]],
+    monsters: [{ kind: "slime", x: 950, y: 464, range: 450 }, { kind: "slime", x: 1800, y: 464, range: 700 }],
+    coins: [[760, 400], [800, 380], [840, 400], [1160, 340], [1220, 340], [1560, 400], [1600, 380], [2000, 320]], flag: 2650 },
+  { id: 3, scene: "park", width: 2600,
+    en: ["The Password Gate", "A gate blocks the road. Walk up to it and use a say block to say \"open\"."],
+    es: ["La puerta con contraseña", "Una puerta bloquea el camino. Acércate y usa un bloque decir para decir \"abre\"."],
+    ground: [[0, 2600]], platforms: [[500, 380, 160]], gate: 1300, password: ["open", "abre", "ábrete"],
+    monsters: [{ kind: "slime", x: 650, y: 464, range: 500 }, { kind: "slime", x: 1600, y: 464, range: 600 }],
+    coins: [[540, 340], [600, 340], [1100, 460], [1500, 460], [1900, 460]], flag: 2450 },
+  { id: 4, scene: "ocean", width: 3000,
+    en: ["Bubble Cave", "Bats fly up and down. Wait for a gap, then jump past. Watch out for spikes!"],
+    es: ["Cueva de burbujas", "Los murciélagos suben y bajan. Espera un hueco y salta. ¡Cuidado con los picos!"],
+    ground: [[0, 900], [1050, 2000], [2150, 3000]], platforms: [[1300, 360, 200], [2300, 380, 160]],
+    spikes: [[1600, 1720], [2500, 2600]],
+    monsters: [{ kind: "bat", x: 700, y: 300, range: 160 }, { kind: "bat", x: 1450, y: 260, range: 160 }, { kind: "bat", x: 2420, y: 280, range: 180 }, { kind: "slime", x: 1100, y: 464, range: 400 }],
+    coins: [[960, 420], [990, 400], [1340, 320], [1400, 320], [2060, 420], [2090, 400], [2340, 340]], flag: 2850 },
+  { id: 5, scene: "space", width: 3000, gravity: 0.45,
+    en: ["Moon Base", "Gravity is low on the moon, so you float. Try a \"set gravity\" block to change it!"],
+    es: ["Base lunar", "En la luna la gravedad es baja y flotas. ¡Prueba un bloque \"poner gravedad\" para cambiarla!"],
+    ground: [[0, 600], [1000, 1600], [2100, 3000]], platforms: [[700, 340, 160], [1750, 300, 200]],
+    spikes: [[1200, 1360], [2300, 2420]],
+    monsters: [{ kind: "bat", x: 1300, y: 220, range: 200 }, { kind: "slime", x: 2500, y: 464, range: 300 }],
+    coins: [[740, 300], [800, 300], [1790, 260], [1850, 260], [1900, 260], [2200, 420]], flag: 2850 },
+  { id: 6, scene: "desert", width: 2600,
+    en: ["Monster Castle", "The big boss guards the flag. Stomp it 3 times to win!"],
+    es: ["Castillo de monstruos", "El gran jefe cuida la bandera. ¡Aplástalo 3 veces para ganar!"],
+    ground: [[0, 2600]], platforms: [[700, 380, 160], [1000, 300, 160]],
+    monsters: [{ kind: "slime", x: 500, y: 464, range: 300 }, { kind: "boss", x: 1500, y: 440, range: 700 }],
+    coins: [[740, 340], [800, 340], [1040, 260], [1100, 260]], flag: 2450 }
+];

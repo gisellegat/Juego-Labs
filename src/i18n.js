@@ -6,7 +6,7 @@ export const T = {
     premade: "Premade", mine: "My characters", backgrounds: "Pick a background",
     robot: "Robot", cat: "Cat", astro: "Astronaut",
     addNew: "Add new character", addNewSub: "Draw one and it's saved here.",
-    deleteChar: "Delete character", play: "▶ Let's play!", learn: "How the game works",
+    deleteChar: "Delete character", play: "▶ Let's play!", learn: "Tutorial",
     bg_paper: "Paper", bg_park: "Park", bg_space: "Space", bg_ocean: "Ocean", bg_desert: "Desert",
     head: "Head", torso: "Body", armL: "Left arm", armR: "Right arm", legL: "Left leg", legR: "Right leg",
     draw_head: "Draw the head", draw_torso: "Draw the body", draw_armL: "Draw the left arm", draw_armR: "Draw the right arm", draw_legL: "Draw the left leg", draw_legR: "Draw the right leg",
@@ -22,15 +22,23 @@ export const T = {
     toys: "Toys:", clearToys: "Clear toys", gravity: "Gravity", bounce: "Bounce",
     dragHint: "Drag anything with the mouse or your finger. Fling your buddy!",
     codeTitle: "Your code", codeHint: "Pick a color on the left, then drag blocks into the space. Snap them under a yellow block to make a script.",
-    terminalTitle: "Terminal: your blocks → JavaScript", terminalEmpty: "Snap a block under a yellow event block to see its code here.",
+    terminalTitle: "Terminal: your blocks as code", terminalEmpty: "Snap a block under a yellow event block to see its code here.",
     ball: "Ball", box: "Box", balloon: "Balloon", plank: "Plank",
     k_space: "space", k_left: "←", k_right: "→", k_up: "↑", k_down: "↓", hi: "Hi!", hey: "Hey!",
     cat_events: "Events", cat_motion: "Motion", cat_looks: "Looks", cat_world: "World", cat_control: "Control",
     b_when_run: "when ▶ Run clicked", b_when_key: "when %1 key pressed", b_when_click: "when buddy clicked", b_when_ground: "when feet touch ground", b_when_toy: "when touching a toy",
     b_jump: "jump %1", b_move: "move %1 (− = left)", b_spin: "spin %1", b_wave: "wave arms", b_say: "say %1", b_spawn: "spawn %1",
     b_gravity: "set gravity to %1", b_explode: "explode, power %1", b_wait: "wait %1 seconds", b_repeat: "repeat %1 times", b_forever: "forever",
-    learnTitle: "How the game works", learnSub: "Every web game is made of three things: HTML, CSS and JavaScript. Read the cards, then try the challenges!",
-    tryIt: "Try it!", backToGame: "← Back"
+    choiceTitle: "Ready, {name}!", choiceSub: "What do you want to do first?",
+    choicePlaySub: "Run, jump and stomp monsters through 6 levels.", choiceTut: "Tutorial", choiceTutSub: "Write real HTML and watch it come alive.", close: "Close",
+    mapTitle: "World map", mapSub: "Clear a level to unlock the next one.", level: "Level {n}", locked: "Locked", cleared: "Cleared",
+    freePlay: "Free play", freePlaySub: "No monsters. Just you, toys and your code.", backToMap: "← Map", goal: "Goal:",
+    win: "Level cleared!", winCoins: "You got {coins} of {total} coins.", nextLevel: "Next level →", replay: "Play again",
+    lose: "Out of hearts!", loseSub: "Monsters, spikes and pits take a heart. Try again!", tryAgain: "Try again", allDone: "You beat every level! You're a coding hero.",
+    tutTitle: "HTML tutorial", tutSub: "Type real HTML on the left. Your page appears on the right. Press Check when you're ready.",
+    step: "Step {n} of {m}", yourCode: "Your code", yourPage: "Your page", task: "Your task:",
+    check: "Check my code", passed: "You did it!", notYet: "Almost! Fix the items with ✗.", nextStep: "Next step →", startOver: "Start over",
+    tutDone: "Tutorial complete! Now go play.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "Beat the boss first!"
   },
   es: {
     tagline: "Dibuja un amigo. Dale vida. Programa lo que hace.",
@@ -38,7 +46,7 @@ export const T = {
     premade: "Listos para jugar", mine: "Mis personajes", backgrounds: "Elige un fondo",
     robot: "Robot", cat: "Gato", astro: "Astronauta",
     addNew: "Agregar personaje", addNewSub: "Dibuja uno y se guarda aquí.",
-    deleteChar: "Borrar personaje", play: "▶ ¡A jugar!", learn: "Cómo funciona el juego",
+    deleteChar: "Borrar personaje", play: "▶ ¡A jugar!", learn: "Tutorial",
     bg_paper: "Papel", bg_park: "Parque", bg_space: "Espacio", bg_ocean: "Océano", bg_desert: "Desierto",
     head: "Cabeza", torso: "Cuerpo", armL: "Brazo izquierdo", armR: "Brazo derecho", legL: "Pierna izquierda", legR: "Pierna derecha",
     draw_head: "Dibuja la cabeza", draw_torso: "Dibuja el cuerpo", draw_armL: "Dibuja el brazo izquierdo", draw_armR: "Dibuja el brazo derecho", draw_legL: "Dibuja la pierna izquierda", draw_legR: "Dibuja la pierna derecha",
@@ -54,15 +62,23 @@ export const T = {
     toys: "Juguetes:", clearToys: "Quitar juguetes", gravity: "Gravedad", bounce: "Rebote",
     dragHint: "Arrastra lo que quieras con el ratón o el dedo. ¡Lanza a tu amigo!",
     codeTitle: "Tu código", codeHint: "Elige un color a la izquierda y arrastra bloques al espacio. Encájalos debajo de un bloque amarillo para hacer un programa.",
-    terminalTitle: "Terminal: tus bloques → JavaScript", terminalEmpty: "Encaja un bloque debajo de un bloque amarillo de evento para ver su código aquí.",
+    terminalTitle: "Terminal: tus bloques como código", terminalEmpty: "Encaja un bloque debajo de un bloque amarillo de evento para ver su código aquí.",
     ball: "Pelota", box: "Caja", balloon: "Globo", plank: "Tabla",
     k_space: "espacio", k_left: "←", k_right: "→", k_up: "↑", k_down: "↓", hi: "¡Hola!", hey: "¡Oye!",
     cat_events: "Eventos", cat_motion: "Movimiento", cat_looks: "Apariencia", cat_world: "Mundo", cat_control: "Control",
     b_when_run: "al hacer clic en ▶ Ejecutar", b_when_key: "al presionar la tecla %1", b_when_click: "al hacer clic en mi amigo", b_when_ground: "cuando los pies tocan el suelo", b_when_toy: "al tocar un juguete",
     b_jump: "saltar %1", b_move: "mover %1 (− = izquierda)", b_spin: "girar %1", b_wave: "agitar los brazos", b_say: "decir %1", b_spawn: "crear %1",
     b_gravity: "poner gravedad en %1", b_explode: "explotar, fuerza %1", b_wait: "esperar %1 segundos", b_repeat: "repetir %1 veces", b_forever: "por siempre",
-    learnTitle: "Cómo funciona el juego", learnSub: "Todo juego web está hecho de tres cosas: HTML, CSS y JavaScript. ¡Lee las tarjetas y prueba los retos!",
-    tryIt: "¡Pruébalo!", backToGame: "← Atrás"
+    choiceTitle: "¡Listo, {name}!", choiceSub: "¿Qué quieres hacer primero?",
+    choicePlaySub: "Corre, salta y aplasta monstruos en 6 niveles.", choiceTut: "Tutorial", choiceTutSub: "Escribe HTML de verdad y míralo cobrar vida.", close: "Cerrar",
+    mapTitle: "Mapa del mundo", mapSub: "Supera un nivel para desbloquear el siguiente.", level: "Nivel {n}", locked: "Bloqueado", cleared: "Superado",
+    freePlay: "Juego libre", freePlaySub: "Sin monstruos. Solo tú, juguetes y tu código.", backToMap: "← Mapa", goal: "Meta:",
+    win: "¡Nivel superado!", winCoins: "Conseguiste {coins} de {total} monedas.", nextLevel: "Siguiente nivel →", replay: "Jugar otra vez",
+    lose: "¡Sin corazones!", loseSub: "Los monstruos, los picos y los hoyos quitan un corazón. ¡Inténtalo otra vez!", tryAgain: "Intentar otra vez", allDone: "¡Superaste todos los niveles! Eres un héroe del código.",
+    tutTitle: "Tutorial de HTML", tutSub: "Escribe HTML de verdad a la izquierda. Tu página aparece a la derecha. Presiona Revisar cuando estés listo.",
+    step: "Paso {n} de {m}", yourCode: "Tu código", yourPage: "Tu página", task: "Tu tarea:",
+    check: "Revisar mi código", passed: "¡Lo lograste!", notYet: "¡Casi! Arregla lo que tiene ✗.", nextStep: "Siguiente paso →", startOver: "Empezar de nuevo",
+    tutDone: "¡Tutorial terminado! Ahora a jugar.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "¡Primero vence al jefe!"
   }
 };
 
@@ -96,3 +112,6 @@ export const LESSONS = [
     en: ["Your drawing becomes a puppet", "When you finish a part, the game cuts it out like a sticker and pins it to the body at a joint. Then it redraws every sticker 60 times a second, so it moves.", "Draw a really long arm. What happens when you wave?"],
     es: ["Tu dibujo se vuelve un títere", "Cuando terminas una parte, el juego la recorta como una calcomanía y la une al cuerpo en una articulación. Luego vuelve a dibujar cada calcomanía 60 veces por segundo, y así se mueve.", "Dibuja un brazo muy largo. ¿Qué pasa cuando saludas?"] }
 ];
+
+// "Level {n}" + { n: 2 } → "Level 2"
+export const fmt = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);

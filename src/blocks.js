@@ -96,9 +96,20 @@ export function createRunner(act) {
   };
 }
 
-// One row per block: what the student built, next to the JavaScript it means.
-export function terminalLines(ws, t, lang) {
-  const N = CODE[lang], out = [], q = v => JSON.stringify(v);
+// The real web-page code each event block stands for, used by the HTML view.
+const DOM_KEY = { space: " ", left: "ArrowLeft", right: "ArrowRight", up: "ArrowUp", down: "ArrowDown" };
+const htmlHead = top => ({
+  gl_when_run: ['run.addEventListener("click", () => {', "});"],
+  gl_when_key: [`addEventListener("keydown", e => { if (e.key === ${JSON.stringify(DOM_KEY[top.getFieldValue("KEY")])}) {`, "}});"],
+  gl_when_click: ['stage.addEventListener("click", () => {', "});"],
+  gl_when_ground: ['stage.addEventListener("touchground", () => {', "});"],
+  gl_when_toy: ['stage.addEventListener("touchtoy", () => {', "});"]
+})[top.type];
+
+// One row per block: what the student built, next to the code it means.
+// mode "js" shows the short game functions; "html" shows the whole thing as a web page.
+export function terminalLines(ws, t, lang, mode = "js") {
+  const N = CODE[lang], out = [], q = v => JSON.stringify(v), html = mode === "html", base = html ? 1 : 0;
   const label = b => {
     const v = b.getField("KEY") ? t["k_" + b.getFieldValue("KEY")] : b.getField("TOY") ? t[b.getFieldValue("TOY")] : argOf(b);
     return t["b_" + b.type.slice(3)].replace("%1", v ?? "");
@@ -116,11 +127,15 @@ export function terminalLines(ws, t, lang) {
       }
     }
   };
+  if (html) out.push({ block: "", code: '<canvas id="stage" width="960" height="540"></canvas>' }, { block: "", code: `<button id="run">${t.run}</button>` }, { block: "", code: "<script>" });
+  const pad = "  ".repeat(base);
   for (const top of ws.getTopBlocks(true)) {
     if (!EVENT_OF[top.type]) continue;
-    out.push({ block: label(top), code: top.type === "gl_when_key" ? `${N.when_key}(${q(top.getFieldValue("KEY"))}, () => {` : `${N[top.type.slice(3)]}(() => {` });
-    walk(top.getNextBlock(), 1);
-    out.push({ block: "", code: "});" });
+    const [open, close] = html ? htmlHead(top) : [top.type === "gl_when_key" ? `${N.when_key}(${q(top.getFieldValue("KEY"))}, () => {` : `${N[top.type.slice(3)]}(() => {`, "});"];
+    out.push({ block: label(top), code: pad + open });
+    walk(top.getNextBlock(), base + 1);
+    out.push({ block: "", code: pad + close });
   }
+  if (html) out.push({ block: "", code: "</script>" });
   return out;
 }
