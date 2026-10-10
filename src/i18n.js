@@ -38,7 +38,7 @@ export const T = {
     tutTitle: "HTML tutorial", tutSub: "Type real HTML on the left. Your page appears on the right. Press Check when you're ready.",
     step: "Step {n} of {m}", yourCode: "Your code", yourPage: "Your page", task: "Your task:",
     check: "Check my code", passed: "You did it!", notYet: "Almost! Fix the items with ✗.", nextStep: "Next step →", startOver: "Start over",
-    tutDone: "Tutorial complete! Now go play.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "Beat the boss first!"
+    tutDone: "Tutorial complete! Now go play.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "Beat the boss first!", fullScreen: "Full screen", exitFull: "Exit full screen", dpad: "Arrow pad", gbRun: "RUN", gbStop: "STOP", gbA: "A button: jump (space)", gbB: "B button: same as clicking your buddy"
   },
   es: {
     tagline: "Aprende a darle vida a tu imaginación con código",
@@ -78,7 +78,7 @@ export const T = {
     tutTitle: "Tutorial de HTML", tutSub: "Escribe HTML de verdad a la izquierda. Tu página aparece a la derecha. Presiona Revisar cuando estés listo.",
     step: "Paso {n} de {m}", yourCode: "Tu código", yourPage: "Tu página", task: "Tu tarea:",
     check: "Revisar mi código", passed: "¡Lo lograste!", notYet: "¡Casi! Arregla lo que tiene ✗.", nextStep: "Siguiente paso →", startOver: "Empezar de nuevo",
-    tutDone: "¡Tutorial terminado! Ahora a jugar.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "¡Primero vence al jefe!"
+    tutDone: "¡Tutorial terminado! Ahora a jugar.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "¡Primero vence al jefe!", fullScreen: "Pantalla completa", exitFull: "Salir de pantalla completa", dpad: "Cruceta", gbRun: "EJECUTAR", gbStop: "ALTO", gbA: "Botón A: saltar (espacio)", gbB: "Botón B: como hacer clic en tu amigo"
   }
 };
 

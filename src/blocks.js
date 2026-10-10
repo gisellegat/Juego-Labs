@@ -43,8 +43,8 @@ export const toolbox = t => ({
 
 let theme;
 export function blocklyTheme(tok) {
-  theme ??= Blockly.Theme.defineTheme("garabato", {
-    name: "garabato", base: Blockly.Themes.Classic, startHats: true,
+  theme ??= Blockly.Theme.defineTheme("juego-labs", {
+    name: "juego-labs", base: Blockly.Themes.Classic, startHats: true,
     fontStyle: { family: "Lexend, system-ui, sans-serif", weight: "600", size: 11 },
     componentStyles: {
       workspaceBackgroundColour: tok("--paper"), toolboxBackgroundColour: tok("--panel"), toolboxForegroundColour: tok("--ink"),

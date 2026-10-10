@@ -21,7 +21,8 @@ export default function App() {
   const [bg, setBg] = useState("park");
   const [levelIdx, setLevelIdx] = useState(null); // null = free play
   const [attempt, setAttempt] = useState(0);
-  const [cleared, setCleared] = useState(() => Number(read("gl-progress", 0)) || 0);
+  // judges: open the site with #unlock to play every level without clearing them first
+  const [cleared, setCleared] = useState(() => location.hash === "#unlock" ? LEVELS.length : Number(read("gl-progress", 0)) || 0);
   const [toastMsg, setToastMsg] = useState("");
   const t = T[lang];
 
@@ -55,7 +56,7 @@ export default function App() {
     <>
       <header>
         <div>
-          <h1 className="logo"><span>Garabato</span> Lab</h1>
+          <h1 className="logo"><span>Juego</span> Labs</h1>
           <p className="tag">{t.tagline}</p>
         </div>
         <div className="lang" role="group" aria-label="Language / Idioma">

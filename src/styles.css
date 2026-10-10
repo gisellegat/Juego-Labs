@@ -1,5 +1,5 @@
 /* Layout: notebook-paper lab bench. Sticker-style hard shadows. Sizes are relative (%, fr, clamp, aspect-ratio) so it scales with the window.
-   Tokens match the Figma "Garabato" variable collection. */
+   Tokens match the Figma "Juego Labs" variable collection. */
 :root{
   --paper:#f5f7fb; --grid:#e1e8f4; --ink:#1d2433; --muted:#5b6578; --panel:#ffffff; --line:#d3dbea;
   --accent:#2f6bff; --hi:#ffcd3c; --ground:#c9d4e6; --veil:rgba(245,247,251,.74);
@@ -173,3 +173,39 @@ input[type=range]{accent-color:var(--accent);width:min(120px,30vw)}
 .checks ul{margin:6px 0 0;padding-left:4px;list-style:none;display:grid;gap:4px}
 .checks .ok{color:var(--ink)} .checks .bad{color:var(--ink);font-weight:600}
 @media (max-width:640px){ .tut{grid-template-columns:minmax(0,1fr)} }
+
+/* Game Boy shell around the stage. One deliberate look in both themes, so its colors are fixed. */
+.gbwrap{--gb-shell:#cfccc2;--gb-shell-2:#b5b2a8;--gb-bezel:#585b6c;--gb-dark:#26272f;--gb-ab:#a8325e;--gb-brand:#2b3a8f;--gb-chrome:290px}
+.gb{background:linear-gradient(160deg,var(--gb-shell),var(--gb-shell-2));border:2px solid var(--ink);border-radius:16px 16px 56px 16px;padding:clamp(10px,2.4%,22px);box-shadow:4px 4px 0 var(--ink);display:grid;gap:clamp(8px,1.6%,14px);user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.gb-top{display:flex;align-items:center;justify-content:space-between}
+.gb-brand{font:italic 800 clamp(.85rem,2vw,1.1rem)/1 var(--f-display);letter-spacing:.06em;color:var(--gb-brand)}
+.gb-icon{width:40px;height:40px;border-radius:50%;border:2px solid var(--gb-dark);background:var(--gb-shell);color:var(--gb-dark);font:700 1.2rem/1 system-ui,sans-serif;cursor:pointer;display:grid;place-items:center}
+.gb-bezel{position:relative;background:var(--gb-bezel);border-radius:10px 10px 34px 10px;padding:clamp(8px,2.2%,18px) clamp(14px,5%,40px)}
+.gb-led{position:absolute;left:clamp(4px,1.6%,14px);top:50%;width:8px;height:8px;border-radius:50%;background:#ff4b5c;box-shadow:0 0 6px #ff4b5c}
+.gb .stagewrap{border:3px solid var(--gb-dark);border-radius:6px;box-shadow:none;width:fit-content;max-width:100%;margin-inline:auto}
+.gb-controls{display:flex;align-items:center;justify-content:space-between;padding-inline:clamp(4px,3%,24px);touch-action:none}
+.dpad{display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);width:clamp(96px,24%,150px);aspect-ratio:1;touch-action:none}
+.dpad button,.ab button{border:0;color:#e9e9ef;cursor:pointer;touch-action:none;font:700 clamp(.8rem,2vw,1.1rem)/1 system-ui,sans-serif}
+.dpad button{background:var(--gb-dark)}
+.dpad .d-up{grid-area:1/2;border-radius:6px 6px 0 0}.dpad .d-left{grid-area:2/1;border-radius:6px 0 0 6px}.dpad .d-right{grid-area:2/3;border-radius:0 6px 6px 0}.dpad .d-down{grid-area:3/2;border-radius:0 0 6px 6px}
+.dpad::after{content:"";grid-area:2/2;background:var(--gb-dark)}
+.ab{display:flex;gap:clamp(10px,3%,22px);transform:rotate(-22deg);touch-action:none}
+.ab button{width:clamp(48px,11vw,68px);aspect-ratio:1;border-radius:50%;background:var(--gb-ab);box-shadow:0 3px 0 #6d1f3d}
+.dpad button:active,.ab button:active{filter:brightness(1.35);transform:translateY(1px)}
+.gb-sys{display:flex;justify-content:center;gap:clamp(14px,4%,30px)}
+.gb-sys button{transform:rotate(-22deg);border:0;border-radius:999px;background:var(--gb-dark);color:#e9e9ef;font:700 .7rem/1 var(--f-body);letter-spacing:.08em;padding:7px 14px;cursor:pointer}
+.gb button:focus-visible{outline:3px solid #ffd45e;outline-offset:2px}
+
+/* full screen: the Game Boy pops over the page; tap outside, ✕ or Esc to exit */
+.gbwrap.full{position:fixed;inset:0;z-index:1000;background:rgba(10,14,24,.8);display:grid;place-items:center;padding:12px;overflow:auto}
+.gbwrap.full .gb{width:min(100%,900px)}
+.gbwrap.full .stagewrap canvas{width:auto;height:auto;max-width:100%;max-height:calc(100vh - var(--gb-chrome));max-height:calc(100dvh - var(--gb-chrome))}
+/* phone held sideways: controls move beside the screen, like a handheld */
+@media (orientation:landscape) and (max-height:620px){
+  .gbwrap.full{--gb-chrome:150px;padding:6px}
+  .gbwrap.full .gb{width:100%;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"top top top" "dpad bezel ab" "sys sys sys";align-items:center;border-radius:16px}
+  .gbwrap.full .gb-top{grid-area:top}.gbwrap.full .gb-bezel{grid-area:bezel}.gbwrap.full .gb-sys{grid-area:sys}
+  .gbwrap.full .gb-controls{display:contents}
+  .gbwrap.full .dpad{grid-area:dpad;width:clamp(96px,16vw,140px)}
+  .gbwrap.full .ab{grid-area:ab;flex-direction:column;transform:none}
+}

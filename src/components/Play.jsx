@@ -86,6 +86,23 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
   }, []);
 
   const fire = (evt, key) => ws.current && runner.current.fire(ws.current, evt, key);
+  // touch buttons repeat while held, like holding a key; keyboard activation (detail 0) fires once
+  const held = useRef(null);
+  const release = () => { clearInterval(held.current); held.current = null; };
+  const hold = k => ({
+    onPointerDown: e => { e.preventDefault(); e.currentTarget.setPointerCapture?.(e.pointerId); release(); fire("key", k); held.current = setInterval(() => fire("key", k), 70); },
+    onPointerUp: release, onPointerCancel: release, onLostPointerCapture: release,
+    onClick: e => { if (e.detail === 0) fire("key", k); },
+    onContextMenu: e => e.preventDefault()
+  });
+  useEffect(() => release, []);
+  const [full, setFull] = useState(false);
+  useEffect(() => {
+    if (!full) return;
+    const esc = e => e.key === "Escape" && setFull(false);
+    document.body.style.overflow = "hidden"; addEventListener("keydown", esc);
+    return () => { document.body.style.overflow = ""; removeEventListener("keydown", esc); };
+  }, [full]);
   return (
     <section className="play">
       <div className="codepane">
@@ -109,19 +126,44 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
           : <div className="thumbs"><b>{t.background}</b>
               {SCENES.map(s => <button key={s} className="thumb" aria-label={t["bg_" + s]} aria-pressed={bg === s} onClick={() => setBg(s)}><SceneThumb theme={s} /></button>)}
             </div>}
-        <div className="stagewrap">
-          <canvas ref={stageRef} width="960" height="540" aria-label={level ? level[lang][0] : "Playground"} />
-          {status && (
-            <div className="overlay" role="dialog" aria-label={status.type === "win" ? t.win : t.lose}>
-              <h2>{status.type === "win" ? t.win : t.lose}</h2>
-              <p>{status.type === "win" ? fmt(t.winCoins, status) : t.loseSub}</p>
-              <div className="row">
-                {status.type === "win" && onNext && <button className="btn go big" onClick={onNext}>{t.nextLevel}</button>}
-                <button className="btn" onClick={onRetry}>{status.type === "win" ? t.replay : t.tryAgain}</button>
-                <button className="btn" onClick={onMap}>{t.backToMap}</button>
+        {/* Game Boy shell: the same stage, with touch controls; "full" pops it over the whole screen */}
+        <div className={`gbwrap${full ? " full" : ""}`} onClick={e => full && e.target === e.currentTarget && setFull(false)}>
+          <div className="gb" role={full ? "dialog" : undefined} aria-modal={full || undefined} aria-label={full ? t.fullScreen : undefined}>
+            <div className="gb-top">
+              <span className="gb-brand">JUEGO LABS</span>
+              <button className="gb-icon" onClick={() => setFull(!full)} aria-label={full ? t.exitFull : t.fullScreen} title={full ? t.exitFull : t.fullScreen}>{full ? "✕" : "⛶"}</button>
+            </div>
+            <div className="gb-bezel">
+              <span className="gb-led" aria-hidden="true" />
+              <div className="stagewrap">
+                <canvas ref={stageRef} width="960" height="540" aria-label={level ? level[lang][0] : "Playground"} />
+                {status && (
+                  <div className="overlay" role="dialog" aria-label={status.type === "win" ? t.win : t.lose}>
+                    <h2>{status.type === "win" ? t.win : t.lose}</h2>
+                    <p>{status.type === "win" ? fmt(t.winCoins, status) : t.loseSub}</p>
+                    <div className="row">
+                      {status.type === "win" && onNext && <button className="btn go big" onClick={onNext}>{t.nextLevel}</button>}
+                      <button className="btn" onClick={onRetry}>{status.type === "win" ? t.replay : t.tryAgain}</button>
+                      <button className="btn" onClick={() => { setFull(false); onMap(); }}>{t.backToMap}</button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
+            <div className="gb-controls">
+              <div className="dpad" role="group" aria-label={t.dpad}>
+                {[["up", "▲"], ["left", "◀"], ["right", "▶"], ["down", "▼"]].map(([k, l]) => <button key={k} className={"d-" + k} aria-label={t["k_" + k]} {...hold(k)}>{l}</button>)}
+              </div>
+              <div className="ab">
+                <button className="b-btn" aria-label={t.gbB} onPointerDown={e => { e.preventDefault(); fire("click"); }} onClick={e => e.detail === 0 && fire("click")}>B</button>
+                <button className="a-btn" aria-label={t.gbA} {...hold("space")}>A</button>
+              </div>
+            </div>
+            <div className="gb-sys">
+              <button onClick={() => runner.current.stop()}>{t.gbStop}</button>
+              <button onClick={() => fire("run")}>{t.gbRun}</button>
+            </div>
+          </div>
         </div>
         <div className="row"><b>{t.toys}</b>
           {TOYS.map(k => <button key={k} className="btn" onClick={() => sim.current.spawnProp(k)}>+ {t[k]}</button>)}
@@ -130,9 +172,6 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
         <div className="row">
           <label className="rng">{t.gravity}<input type="range" min="-1" max="2" step="0.1" value={grav} onChange={e => setGrav(sim.current.setGravity(e.target.value))} /></label>
           <label className="rng">{t.bounce}<input type="range" min="0" max="1" step="0.05" value={bounce} onChange={e => { setBounce(+e.target.value); sim.current.setBounce(+e.target.value); }} /></label>
-          <span className="row pad">
-            {[["left", "←"], ["up", "↑"], ["right", "→"], ["space", t.k_space]].map(([k, l]) => <button key={k} className="btn" onPointerDown={() => fire("key", k)}>{l}</button>)}
-          </span>
         </div>
         <p className="hint">{t.dragHint}</p>
         <div className="terminal" aria-label={t.terminalTitle}>
