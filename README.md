@@ -23,10 +23,17 @@ Then go to http://localhost:8000. To publish it, turn on GitHub Pages (Settings 
 
 The editable Figma template lives here: https://www.figma.com/design/en67Sfnugtzp8HmcmZMedS
 
-- **Screens:** Pick, Draw and Play, built from components.
-- **Components:** Button, Code Block (5 categories), Character Card, Part Chip, Swatch, Language Toggle, Speech Bubble, Header.
+- **Screens:**
+  - 01 Pick: premade characters, My characters with an "Add new character" card, and a background picker.
+  - 02 Draw: the limb-by-limb wizard, with a field to name the character.
+  - 03 Play: block palette and scripts on the left like Scratch; stage, background picker and a terminal on the right. The terminal shows each block next to the JavaScript it becomes.
+  - 04 / 05 How the game works: 7 kid-friendly lesson cards about the HTML, CSS and JavaScript behind the game. The English and Spanish screens are the same frame with the Copy variable mode switched.
+  - Narrower copies (tablet 1024, phone landscape 844, phone 390) show the layout reflowing. Everything sizes relative to its container (fill, min/max, wrap, Scale constraints), not fixed pixels.
+- **Components:** Button, Code Block (5 categories), Character Card (Premade / Draw own / Add new), Background Card, Scene (5 stage backgrounds), Tutorial Card (HTML / CSS / JavaScript), Terminal and Terminal Line, Part Chip, Swatch, Text Field, Language Toggle, Speech Bubble, Header.
 - **Character Parts:** a 600×600 drawing template whose part frames match `PARTS` and `JOINTS` in `index.html`. Draw a character there, export each part as PNG, and upload them in the game.
-- **Variables:** light and dark color modes that match the CSS tokens at the top of `index.html`.
+- **Variables:** light and dark color modes that match the CSS tokens at the top of `index.html`, plus a Copy collection with EN / ES text for the lessons and terminal.
+
+The new screens (backgrounds, saved characters, lessons, terminal) are designs; the game code doesn't have them yet.
 
 If you change a color, change it in both places: the Figma variables and the `:root` CSS tokens.
 
