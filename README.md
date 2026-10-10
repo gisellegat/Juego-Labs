@@ -52,6 +52,8 @@ The editable Figma template lives here: https://www.figma.com/design/en67Sfnugtz
 
 If you change a color, change it in both places.
 
+The display and button text styles use Puffin Arcade and Circular Std, which are installed on the designer's computer only. Text that was written by tools uses a stand-in font (Baloo 2 or Lexend) and its layer name ends in `· needs <style name>`: search the layers panel for "needs" and reapply the style.
+
 ## Project layout
 
 ```

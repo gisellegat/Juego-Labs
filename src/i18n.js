@@ -1,8 +1,8 @@
 // All visible text, English + Spanish. Block messages use Blockly's %1 placeholders.
 export const T = {
   en: {
-    tagline: "Draw a buddy. Bring it to life. Code what it does.",
-    pickTitle: "Pick a character, or add your own",
+    tagline: "Learn to code your imagination to life",
+    pickTitle: "Pick a character, or add your own!",
     premade: "Premade", mine: "My characters", backgrounds: "Pick a background",
     robot: "Robot", cat: "Cat", astro: "Astronaut",
     addNew: "Add new character", addNewSub: "Draw one and it's saved here.",
@@ -41,8 +41,8 @@ export const T = {
     tutDone: "Tutorial complete! Now go play.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "Beat the boss first!"
   },
   es: {
-    tagline: "Dibuja un amigo. Dale vida. Programa lo que hace.",
-    pickTitle: "Elige un personaje o agrega el tuyo",
+    tagline: "Aprende a darle vida a tu imaginación con código",
+    pickTitle: "¡Elige un personaje o agrega el tuyo!",
     premade: "Listos para jugar", mine: "Mis personajes", backgrounds: "Elige un fondo",
     robot: "Robot", cat: "Gato", astro: "Astronauta",
     addNew: "Agregar personaje", addNewSub: "Dibuja uno y se guarda aquí.",
