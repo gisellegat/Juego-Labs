@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { PARTS, JOINTS, S, cropParts } from "../character.js";
 import { fmt } from "../i18n.js";
+import { COLORS } from "../paint.js";
+import Toolbar, { usePaint } from "./Toolbar.jsx";
 
-const COLORS = ["#1d2433", "#ff5d73", "#ff9f43", "#ffcd3c", "#2bb673", "#2f6bff", "#a26bff", "#f1c27d", "#8d5524", "#ffffff", "erase"];
 const SIZE = 200 * S;
 const MAX_LAYERS = 6;
 // the whole figure's box in figure units: where an uploaded buddy gets fitted
@@ -13,9 +14,10 @@ const outline = (x, p) => { x.beginPath(); if (p.round) x.arc((p.x + p.w / 2) * 
 
 // Limb-by-limb drawing wizard with layers: strokes go to the selected layer, clipped to the current part.
 export default function Draw({ t, toast, onBack, onDone }) {
-  const guide = useRef(null), last = useRef(null), canvases = useRef({}), nextId = useRef(2);
+  const guide = useRef(null), canvases = useRef({}), nextId = useRef(2);
   const [step, setStep] = useState(0);
   const [color, setColor] = useState(COLORS[0]);
+  const [tool, setTool] = useState("brush");
   const [size, setSize] = useState(14);
   const [trace, setTrace] = useState("");
   const [name, setName] = useState("");
@@ -53,14 +55,10 @@ export default function Draw({ t, toast, onBack, onDone }) {
   }, [step, p]);
 
   const at = e => { const r = guide.current.getBoundingClientRect(); return { x: ((e.clientX - r.left) * SIZE) / r.width, y: ((e.clientY - r.top) * SIZE) / r.height }; };
-  function stroke(a, b) {
-    const x = ctx(); x.save(); outline(x, p); x.clip();
-    x.globalCompositeOperation = color === "erase" ? "destination-out" : "source-over";
-    x.strokeStyle = color === "erase" ? "#000" : color; x.lineWidth = size; x.lineCap = x.lineJoin = "round";
-    x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x + 0.01, b.y); x.stroke(); x.restore();
-  }
+  // every tool stays inside the current part: its circle (head) or its box
+  const inPart = (px, py) => p.round ? Math.hypot(px - (p.x + p.w / 2) * S, py - (p.y + p.h / 2) * S) <= (p.w * S) / 2 : px >= p.x * S && px < (p.x + p.w) * S && py >= p.y * S && py < (p.y + p.h) * S;
+  const paint = usePaint({ ctx, at, clip: x => { outline(x, p); x.clip(); }, inside: inPart, snap, tool, color, size });
   function fillBehind() {
-    if (color === "erase") return;
     snap(); const x = ctx(); x.save(); x.globalCompositeOperation = "destination-over"; x.fillStyle = color;
     if (p.round) { x.beginPath(); x.arc((p.x + p.w / 2) * S, (p.y + p.h / 2) * S, (p.w * S) / 2 - 3, 0, 7); } else { x.beginPath(); x.roundRect(p.x * S + 3, p.y * S + 3, p.w * S - 6, p.h * S - 6, 18); }
     x.fill(); x.restore();
@@ -119,20 +117,14 @@ export default function Draw({ t, toast, onBack, onDone }) {
             {trace && <img src={trace} alt="" />}
             {layers.map(l => <canvas key={l.id} ref={c => { if (c) canvases.current[l.id] = c; }} width={SIZE} height={SIZE} hidden={!l.visible} aria-hidden="true" />)}
             <canvas ref={guide} className="guide" width={SIZE} height={SIZE} aria-label={t["draw_" + p.id]}
-              onPointerDown={e => { try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* pointer gone */ } snap(); last.current = at(e); stroke(last.current, last.current); }}
-              onPointerMove={e => { if (!last.current) return; const q = at(e); stroke(last.current, q); last.current = q; }}
-              onPointerUp={() => { last.current = null; }} onPointerCancel={() => { last.current = null; }} />
+              data-tool={tool} {...paint} />
           </div>
         </div>
         <div className="tools">
           <p className="prompt">{t["draw_" + p.id]}</p>
           <p className="hint">{t.drawHint}</p>
           <label className="rng"><input type="checkbox" checked={zoom} onChange={e => setZoom(e.target.checked)} /> {t.zoomPart}</label>
-          <div className="swatches">
-            {COLORS.map(c => <button key={c} className={"sw" + (c === "erase" ? " erase" : "")} style={c === "erase" ? undefined : { background: c }}
-              aria-label={c === "erase" ? "eraser / borrador" : c} aria-pressed={c === color} onClick={() => setColor(c)} />)}
-          </div>
-          <label className="rng">{t.brush}<input type="range" min="4" max="60" value={size} onChange={e => setSize(+e.target.value)} /></label>
+          <Toolbar t={t} tool={tool} setTool={setTool} color={color} setColor={setColor} size={size} setSize={setSize} />
           <div className="layers" role="group" aria-label={t.layers}>
             <div className="layers-head"><b>{t.layers}</b><button className="mini" onClick={addLayer} disabled={layers.length >= MAX_LAYERS}>{t.addLayer}</button></div>
             {/* top layer first, like every drawing app */}

@@ -13,6 +13,8 @@ import WorldMap from "./components/Map.jsx";
 import Tutorial from "./components/Tutorial.jsx";
 import Cards from "./components/Cards.jsx";
 import Intro from "./components/Intro.jsx";
+import DrawBg from "./components/DrawBg.jsx";
+import { SCENES, setCustomScene } from "./scenes.js";
 
 const read = (key, fallback) => { try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } };
 const write = (key, v) => { try { localStorage.setItem(key, v); } catch { /* private mode: progress lasts until the tab closes */ } };
@@ -29,6 +31,19 @@ export default function App() {
   const [choice, setChoice] = useState({ kind: "premade", key: "robot" });
   const [asking, setAsking] = useState(false);
   const [bg, setBg] = useState("park");
+  const [pickStep, setPickStep] = useState(0); // 0 characters, 1 backgrounds (same page, slides sideways)
+  // the background the player drew, saved in this browser
+  const [customBg, setCustomBg] = useState(() => read("gl-bg-custom", ""));
+  const [customImg, setCustomImg] = useState(null), [sceneVer, setSceneVer] = useState(0);
+  useEffect(() => {
+    if (!customBg) return;
+    const img = new Image(); img.onload = () => { setCustomScene(img); setCustomImg(img); setSceneVer(v => v + 1); }; img.src = customBg;
+  }, [customBg]);
+  const scenes = customImg ? [...SCENES, "custom"] : SCENES;
+  function saveBackground(url) {
+    setCustomBg(url); setBg("custom"); setPickStep(1); setScreen("pick");
+    try { localStorage.setItem("gl-bg-custom", url); } catch { toast(t.noSave); }
+  }
   const [levelIdx, setLevelIdx] = useState(null); // null = free play
   const [attempt, setAttempt] = useState(0);
   // judges: open the site with #unlock to play every level without clearing them first
@@ -43,7 +58,7 @@ export default function App() {
   const parts = savedChar?.parts ?? premade[choice.key] ?? premade.robot;
   const charName = savedChar?.name ?? t[choice.key] ?? t.robot;
 
-  function pick(c) { setChoice(c); setAsking(true); }
+  function pick(c) { setChoice(c); setPickStep(1); }
   function addCharacter(newParts, name) {
     const ch = { id: Date.now().toString(36), name, parts: newParts }, list = [...saved, ch];
     setSaved(list); setScreen("pick"); pick({ kind: "saved", id: ch.id });
@@ -73,13 +88,15 @@ export default function App() {
       </header>
       <main>
         {screen === "pick" && <Pick t={t} premade={premade} saved={saved} choice={choice} onPick={pick} bg={bg} setBg={setBg}
-          onAdd={() => setScreen("draw")} onDelete={deleteCharacter} />}
+          step={pickStep} setStep={setPickStep} scenes={scenes} sceneVer={sceneVer} onContinue={() => setAsking(true)}
+          onAdd={() => setScreen("draw")} onDrawBg={() => setScreen("drawbg")} onDelete={deleteCharacter} />}
+        {screen === "drawbg" && <DrawBg t={t} start={customImg} onBack={() => setScreen("pick")} onDone={saveBackground} />}
         {screen === "draw" && <Draw t={t} toast={toast} onBack={() => setScreen("pick")} onDone={addCharacter} />}
         {screen === "map" && <WorldMap t={t} lang={lang} cleared={cleared} onLevel={play} onFree={() => play(null)} onTutorial={() => go("cards")} />}
-        {screen === "play" && <Play key={`${levelIdx}-${attempt}`} guide={guided} onMonsters={() => go("map")} t={t} lang={lang} parts={parts} bg={bg} setBg={setBg}
+        {screen === "play" && <Play key={`${levelIdx}-${attempt}`} guide={guided} onMonsters={() => go("map")} t={t} lang={lang} parts={parts} bg={bg} setBg={setBg} scenes={scenes} sceneVer={sceneVer}
           level={levelIdx === null ? null : LEVELS[levelIdx]} onWin={levelWon} onRetry={() => play(levelIdx)}
           onNext={levelIdx !== null && levelIdx + 1 < LEVELS.length ? () => play(levelIdx + 1) : null}
-          onMap={() => go("map")} onChangeChar={() => go("pick")} onLearn={() => go("cards")} />}
+          onMap={() => go("map")} onChangeChar={() => { setPickStep(0); go("pick"); }} onLearn={() => go("cards")} />}
         {screen === "cards" && <Cards t={t} lang={lang} onPlay={() => play(null, true)} onHtml={() => go("tutorial")} />}
         {screen === "tutorial" && <Tutorial t={t} lang={lang} onBack={() => go("cards")} onDone={() => go("map")} />}
       </main>

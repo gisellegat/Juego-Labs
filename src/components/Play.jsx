@@ -5,7 +5,6 @@ import { Dialog } from "@base-ui/react/dialog";
 import * as BlocklyEn from "blockly/msg/en";
 import * as BlocklyEs from "blockly/msg/es";
 import { createSim, TOYS } from "../sim.js";
-import { SCENES } from "../scenes.js";
 import { defineBlocks, toolbox, blocklyTheme, starterScripts, createRunner, terminalLines } from "../blocks.js";
 import { fmt, LESSONS } from "../i18n.js";
 import LessonCard from "./LessonCard.jsx";
@@ -18,7 +17,7 @@ const WS_KEY = "gl-ws";
 // Scratch-style layout: Blockly (palette + scripts) on the left, stage + terminal on the right.
 // level = null is free play; otherwise a level from levels.js (the parent remounts Play per attempt)
 // guide = true: the "How it works" cards walk the student through the game one step at a time, then onMonsters
-export default function Play({ t, lang, parts, bg, setBg, level, guide, onMonsters, onMap, onWin, onNext, onRetry, onChangeChar, onLearn }) {
+export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, level, guide, onMonsters, onMap, onWin, onNext, onRetry, onChangeChar, onLearn }) {
   const stageRef = useRef(null), blocklyRef = useRef(null), stageWrapRef = useRef(null);
   const ws = useRef(null), sim = useRef(null), runner = useRef(null), live = useRef({});
   const [lines, setLines] = useState([]);
@@ -247,7 +246,7 @@ export default function Play({ t, lang, parts, bg, setBg, level, guide, onMonste
         {level
           ? <p className="goal"><b>{level[lang][0]}</b> · {t.goal} {level[lang][1]}</p>
           : <div className="thumbs"><b>{t.background}</b>
-              {SCENES.map(s => <button key={s} className="thumb" aria-label={t["bg_" + s]} aria-pressed={bg === s} onClick={() => { if (s !== bg) progress("bg"); setBg(s); }}><SceneThumb theme={s} /></button>)}
+              {scenes.map(s => <button key={s + sceneVer} className="thumb" aria-label={t["bg_" + s]} aria-pressed={bg === s} onClick={() => { if (s !== bg) progress("bg"); setBg(s); }}><SceneThumb theme={s} /></button>)}
             </div>}
         {/* Game Boy shell: the same stage, with touch controls; "full" pops it over the whole screen */}
         <div className={`gbwrap${full ? " full" : ""}`} onClick={e => full && e.target === e.currentTarget && toggleFull(false)}>

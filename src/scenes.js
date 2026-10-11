@@ -5,8 +5,13 @@ export const GROUND = 40;
 const ell = (x, cx, cy, rx, ry, f) => { x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, 7); x.fillStyle = f; x.fill(); };
 const rect = (x, X, Y, w, h, f) => { x.fillStyle = f; x.fillRect(X, Y, w, h); };
 
+// "custom": the background the player drew (an image, set once it has loaded)
+let custom = null;
+export const setCustomScene = img => { custom = img; };
+
 export function drawScene(x, theme, W, H, tok) {
   const gy = H - GROUND;
+  if (theme === "custom" && custom) return void x.drawImage(custom, 0, 0, W, H);
   if (theme === "park") {
     rect(x, 0, 0, W, H, "#bfe6ff"); ell(x, W * .82, 90, 50, 50, "#ffcd3c");
     ell(x, 190, 90, 75, 25, "#fff"); ell(x, 520, 130, 55, 18, "#fff");
