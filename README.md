@@ -8,10 +8,18 @@
 
 ![Playing a level on the Game Boy, with code blocks on the left](docs/screens/level.png)
 
+## The Problem We're Solving
+
+- Most "learn to code" games hide the code: kids drag blocks but never see the HTML, CSS and JavaScript those blocks stand for.
+- Most of them are English-only, which leaves out Spanish-speaking students and their families.
+- Many need accounts, installs or fast computers, which schools don't always have.
+
+Juego Labs puts the real code right next to the blocks, in English and Spanish, in any browser, with no sign-up.
+
 ## How Juego Labs Works
 
 - **Make your hero.** Pick a robot, cat or astronaut, or draw your own one body part at a time. The game turns your drawing into a puppet that walks, jumps and waves, and always stays on its feet.
-- **Snap code blocks.** Like Scratch: "when space is pressed → jump 12". A terminal under the screen shows each block as real JavaScript or as a real HTML page.
+- **Snap code blocks.** Like Scratch: "when space is pressed → jump 12". A terminal right beside your code shows each block as real JavaScript or as a real HTML page.
 - **Learn on a Game Boy.** "Let's play" puts the 7 How-it-works cards next to the Game Boy. Each card asks for one thing (press Run, jump, switch the terminal to HTML…), checks that you did it, and moves on.
 - **Play on a Game Boy.** The game lives inside a Game Boy with a touch D-pad and A/B buttons. Tap ⛶ to pop it full screen on a tablet or phone; tap ✕ to go back.
 
@@ -39,6 +47,17 @@
 ## Demo video
 
 ▶ **Demo video:** _add the video link here (YouTube, Loom or a file in this repo)_
+
+## Team
+
+| Name | Role |
+|------|------|
+| _Name_ | _Role, e.g. design, code, pitch_ |
+
+## Track and challenges
+
+- **Main track:** _name the Hacklanta track here_
+- **Side challenges:** _list any side challenges, or "none"_
 
 ## For Hacklanta judges
 
@@ -80,7 +99,7 @@ Every push to `main` is tested, built and published to GitHub Pages by `.github/
 | Dialogs | base-ui (accessible popups: focus trapping, Esc, focus return) |
 | Toasts | Sonner |
 | HTML checker | The browser's built-in DOMParser; jsdom for the automated tests |
-| Fonts | Google Fonts (Baloo 2, Lexend) |
+| Fonts | Adobe Fonts (Puffin Arcade) and Google Fonts (Figtree, Lexend) |
 | Hosting | GitHub Pages + GitHub Actions |
 | Design | Figma ([design file](https://www.figma.com/design/en67Sfnugtzp8HmcmZMedS)) |
 | AI assistance | Claude Code (Anthropic) helped write code, tests and design files |
@@ -116,4 +135,4 @@ docs/screens/        screenshots used in this README
 
 The Figma file has every screen in English and Spanish (an "Español (ES)" group), plus components and a 600×600 character-drawing template whose part frames match `PARTS` and `JOINTS` in `src/character.js`. Colors in Figma match the CSS tokens at the top of `src/styles.css`.
 
-The display and button text styles use Puffin Arcade and Circular Std, which are installed on the designer's computer only. Text written by tools uses a stand-in font (Baloo 2 or Lexend), and its layer name ends in `· needs <style name>`: search the layers panel for "needs" and reapply the style.
+Fonts match between Figma and the game: Puffin Arcade Nerf (logo), Puffin Arcade Regular (page titles), Figtree Medium (subheadings and buttons) and Lexend (body text). Puffin Arcade loads from an Adobe Fonts web project; Figtree and Lexend from Google Fonts.
