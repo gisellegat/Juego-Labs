@@ -5,7 +5,7 @@ My main goal was to create an open-access e-learning resource that helps student
 Designed with elementary and middle school students in mind, this website is a great fit for classrooms, coding clubs, and home.
 No account needed, no installation, and it works on laptops, tablets, and phones.
 
-**[▶ Play Juego Labs] (https://gisellegat.github.io/Juego-Labs/)** · [Run it on your own computer](#run-it-yourself)
+**[▶ Play Juego Labs](https://gisellegat.github.io/Juego-Labs/)** · [Run it on your own computer](#run-it-yourself)
 
 ![Playing a level on the Game Boy, with code blocks on the left](docs/screens/level.png)
 
@@ -17,16 +17,20 @@ I was inspired by Melon Playground, a ragdoll engine where you can build your ow
 
 ## How Juego Labs Works
 After character selection, two options pop up on screen: “Let's Play” and “Tutorial”
-Let’s Play
-1. ** Pick your character** On the home screen, you can choose from three pre-made characters: a robot, a cat, or an astronaut, or you can design your own, which opens up the canvas and gives you instructions on how to design your character. You can name it, then choose from the pre-made backgrounds. From the desert to space: your character knows no bounds
+
+### Let’s Play
+
+1. **Pick your character.** On the home screen, you can choose from three pre-made characters: a robot, a cat, or an astronaut, or you can design your own, which opens up the canvas and gives you instructions on how to design your character. You can name it, then choose from the pre-made backgrounds. From the desert to space: your character knows no bounds
 - **Snap code blocks.** Like Scratch: "when space is pressed → jump 12". A terminal right beside your code shows each block as real JavaScript or as a real HTML page.
 - **Learn on a Game Boy.** "Let's play" puts the 7 “How-it-works” cards next to the Game Boy. Each card asks for one thing (press Run, jump, switch the terminal to HTML…), checks that you did it, and moves on.
-- **Play on a Game Boy. **** The game lives inside a Game Boy with a touch D-pad and A/B buttons. Tap ⛶ to pop it full screen on a tablet or phone; tap ✕ to go back.
+- **Play on a Game Boy.** The game lives inside a Game Boy with a touch D-pad and A/B buttons. Tap ⛶ to pop it full screen on a tablet or phone; tap ✕ to go back.
 
 ![Game Boy in full screen on a phone held sideways](docs/screens/fullscreen-phone-landscape.png)
 
 After the last card, 6 Mario-style levels test what you learned: grab coins, stomp slimes, bats, and a boss, and open a password gate with a code.
-Tutorial
+
+### Tutorial
+
 A simple “Tutorial” option lets users learn HTML without the gaming element. This mode plays the same cards one by one, like a slideshow. At the end, **Write real HTML** opens 7 hands-on steps: type HTML, watch your page appear, and press "Check my code" for ✓ and ✗ feedback.
 
 ![World map with cleared, open and locked levels](docs/screens/map.png)
@@ -51,7 +55,7 @@ Minor in Software Engineering
 ## Track and challenges
 
 - **Main track:** Creative
-- **Side challenges:** Small Business Challege by Replit
+- **Side challenges:** Small Business Challenge by Replit
 
 ## For Hacklanta judges
 - **Live demo:** https://gisellegat.github.io/Juego-Labs/
