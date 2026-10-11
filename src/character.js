@@ -1,6 +1,6 @@
 // Character model. Figure coords are 200x200; the drawing sheet is S times bigger.
 // These numbers match the "Character Parts" page in the Figma template.
-export const S = 3;
+export const S = 4; // drawing sheet is 800×800: room for detail
 export const INK = "#1d2433";
 export const PARTS = [
   { id: "head", x: 75, y: 5, w: 50, h: 50, round: true, fill: "#ffd9b3" },

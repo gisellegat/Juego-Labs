@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
-import { previewFrom } from "../character.js";
+import { previewFrom, S } from "../character.js";
 import { SCENES } from "../scenes.js";
 import SceneThumb from "./SceneThumb.jsx";
 
 function Preview({ parts }) {
   const ref = useRef(null);
   useEffect(() => { const c = previewFrom(parts), x = ref.current.getContext("2d"); x.clearRect(0, 0, c.width, c.height); x.drawImage(c, 0, 0); }, [parts]);
-  return <canvas ref={ref} width="270" height="585" aria-hidden="true" />;
+  return <canvas ref={ref} width={90 * S} height={195 * S} aria-hidden="true" />;
 }
 
 export default function Pick({ t, premade, saved, choice, onPick, bg, setBg, onAdd, onDelete }) {

@@ -76,12 +76,14 @@ section{display:grid;gap:18px}
 .chip.now{border-color:var(--accent);color:var(--ink);font-weight:600}
 .chip.done{border-color:var(--ink);color:var(--ink)}
 .chip.done::before{content:"✓ "}
-.draw{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px;align-items:start}
-.stack{position:relative;width:100%;max-width:520px;aspect-ratio:1;background:var(--panel);border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;box-shadow:4px 4px 0 var(--ink)}
+.draw{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(min(100%,300px),1fr);gap:24px;align-items:start}
+@media (max-width:860px){ .draw{grid-template-columns:minmax(0,1fr)} }
+.stack{position:relative;width:min(100%,calc(100vh - 190px));min-width:min(100%,320px);aspect-ratio:1;background:var(--panel);border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;box-shadow:4px 4px 0 var(--ink)}
+.stack .view{position:absolute;inset:0;transform-origin:0 0;transition:transform 320ms cubic-bezier(0.23,1,0.32,1)}
 .stack canvas,.stack img{position:absolute;inset:0;width:100%;height:100%}
 .stack img{object-fit:contain;opacity:.3;pointer-events:none}
 .sheet{touch-action:none;cursor:crosshair}
-.guide{pointer-events:none}
+.guide{touch-action:none;cursor:crosshair}
 .tools{display:grid;gap:14px;align-content:start;min-width:0}
 .prompt{font-family:var(--f-display);font-size:clamp(1.2rem,3vw,1.5rem);line-height:1.15;margin:0}
 .swatches{display:flex;flex-wrap:wrap;gap:6px}
@@ -268,3 +270,20 @@ input[type=range]{accent-color:var(--accent);width:min(120px,30vw)}
 .blocklyEditableField.coach>rect{stroke:var(--hi);stroke-width:5px}
 @keyframes coach{50%{outline-color:var(--accent)}}
 @media (prefers-reduced-motion:reduce){ .coach{animation:none} }
+
+/* drawing page: upload a ready-made buddy, part chips you can jump between, layers */
+.buddy-upload{position:relative;display:flex;align-items:center;gap:14px;padding:14px 18px;border:3px dashed var(--accent);border-radius:var(--r);background:var(--panel);cursor:pointer;color:var(--ink)}
+.buddy-upload:hover{background:var(--grid)}
+.buddy-upload:focus-within{outline:3px solid var(--accent);outline-offset:3px}
+.buddy-upload input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.buddy-upload b{display:block;font:800 1.2rem var(--f-display);color:var(--accent)}
+.buddy-upload small{color:var(--muted)}
+.buddy-icon{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--panel);font:800 1.4rem var(--f-display)}
+button.chip{font:inherit;font-size:.8rem;background:none;cursor:pointer}
+.layers{display:grid;gap:4px;border:2px solid var(--line);border-radius:12px;padding:8px}
+.layers-head{display:flex;justify-content:space-between;align-items:center}
+.layer{display:flex;align-items:center;gap:2px;border-radius:8px;padding:2px}
+.layer.on{background:var(--grid);outline:2px solid var(--accent)}
+.layer-name{flex:1;text-align:left;font:600 .9rem var(--f-body);color:var(--ink);background:none;border:0;padding:6px;cursor:pointer}
+.layer .eye{width:30px}
+@media (prefers-reduced-motion:reduce){ .stack .view{transition:none} }
