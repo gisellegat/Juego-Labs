@@ -14,8 +14,6 @@
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-/* crumpled-paper texture behind every page, at 55% */
-body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("./assets/paper.jpg") center/cover;opacity:.55}
 body{
   margin:0; background:var(--paper);
   color:var(--ink); font-family:var(--f-body); font-size:15px;
@@ -321,3 +319,15 @@ button.chip{font:inherit;font-size:.8rem;background:none;cursor:pointer}
 .layer.on{background:var(--panel);border-color:var(--accent);outline:0}
 .layers .mini,.layers .mini:hover,.layers .mini:active{background:none}
 .layers .mini:hover{color:var(--accent)}
+
+/* page transitions (View Transitions API): the header stays put, the page fades and slides up */
+header{view-transition-name:site-header}
+::view-transition-old(root){animation:180ms var(--ease-out) both vt-out}
+::view-transition-new(root){animation:260ms var(--ease-out) both vt-in}
+@keyframes vt-out{to{opacity:0;transform:translateY(-8px)}}
+@keyframes vt-in{from{opacity:0;transform:translateY(14px)}}
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-old(root){animation:150ms ease both vt-fade-out}
+  ::view-transition-new(root){animation:150ms ease both vt-fade-in}
+  @keyframes vt-fade-out{to{opacity:0}} @keyframes vt-fade-in{from{opacity:0}}
+}

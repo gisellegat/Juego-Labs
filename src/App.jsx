@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 import { Dialog } from "@base-ui/react/dialog";
 import { Toaster, toast } from "sonner";
 import { T, fmt } from "./i18n.js";
@@ -17,7 +18,9 @@ const startLang = () => read("gl-lang", navigator.language.startsWith("es") ? "e
 
 export default function App() {
   const [lang, setLang] = useState(startLang);
-  const [screen, setScreen] = useState("pick");
+  const [screen, setScreenNow] = useState("pick");
+  // page transitions: the browser cross-slides from the old screen to the new one (instant where unsupported)
+  const setScreen = s => document.startViewTransition ? document.startViewTransition(() => flushSync(() => setScreenNow(s))) : setScreenNow(s);
   const [saved, setSaved] = useState([]);
   const [choice, setChoice] = useState({ kind: "premade", key: "robot" });
   const [asking, setAsking] = useState(false);
