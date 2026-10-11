@@ -6,10 +6,10 @@
   --b-ink:#1d2433; --b-world:#62d69e; --b-stop:#ff8592;
   --term-bg:#0f1420; --term-bar:#1c2436; --term-text:#d6e2ff; --term-block:#ffcd3c; --term-code:#62d69e; --term-comment:#7d8aa8;
   --tag-html:#ff9f43; --tag-css:#7aa9ff; --tag-js:#ffcd3c;
-  /* Puffin Arcade (Adobe Fonts kit mzj5fjz): Nerf = Display/XL, Regular = Display/L; Baloo 2 stands in for Circular Std */
-  --f-arcade-xl:"puffin-arcade-nerf","Baloo 2",system-ui,sans-serif;
-  --f-arcade:"puffin-arcade-regular","Baloo 2",system-ui,sans-serif;
-  --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  /* Puffin Arcade (Adobe Fonts kit mzj5fjz): Nerf = Display/XL, Regular = Display/L; Figtree (Google Fonts) is the free stand-in for Circular Std (Display/M, UI/Button) */
+  --f-arcade-xl:"puffin-arcade-nerf","Figtree",system-ui,sans-serif;
+  --f-arcade:"puffin-arcade-regular","Figtree",system-ui,sans-serif;
+  --f-display:"Figtree","Trebuchet MS",system-ui,sans-serif;
   --f-body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-code:ui-monospace,"Roboto Mono","Cascadia Code",Consolas,monospace;
   --r:14px; color-scheme:light;
@@ -334,3 +334,7 @@ header{view-transition-name:site-header}
   ::view-transition-new(root){animation:150ms ease both vt-fade-in}
   @keyframes vt-fade-out{to{opacity:0}} @keyframes vt-fade-in{from{opacity:0}}
 }
+
+/* Display/M and UI/Button are Medium (500) in Figma; buttons get the style's 2% tracking */
+h3,.prompt,.card b,.node b,.choice b,.buddy-upload b{font-weight:500}
+.btn{font-weight:500;letter-spacing:.02em}

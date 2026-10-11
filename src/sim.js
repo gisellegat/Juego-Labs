@@ -198,7 +198,7 @@ export function createSim(canvas, onEvent, level = null) {
     }
     if (gate) { const { min, max } = gate.bounds;
       for (let y = min.y; y < max.y; y += 26) for (let x = min.x + ((y / 26) % 2 ? 0 : -10); x < max.x; x += 20) rr(Math.max(min.x, x), y, 20, 26, 2, "#9aa3b5");
-      ctx.font = "800 28px 'Baloo 2', sans-serif"; ctx.fillStyle = INK; ctx.textAlign = "center"; ctx.fillText("?", (min.x + max.x) / 2, FLOOR - 140); ctx.textAlign = "start"; }
+      ctx.font = "800 28px Figtree, sans-serif"; ctx.fillStyle = INK; ctx.textAlign = "center"; ctx.fillText("?", (min.x + max.x) / 2, FLOOR - 140); ctx.textAlign = "start"; }
     const fx0 = level.flag; ctx.fillStyle = INK; ctx.fillRect(fx0 - 3, FLOOR - 220, 6, 220);
     ctx.beginPath(); ctx.moveTo(fx0 + 3, FLOOR - 218); ctx.lineTo(fx0 + 70, FLOOR - 196 + Math.sin(tick / 10) * 4 * sway()); ctx.lineTo(fx0 + 3, FLOOR - 172); ctx.closePath(); ctx.fillStyle = tok("--accent"); ctx.fill(); ctx.stroke();
     for (const c of coinBodies) if (!c.plugin.taken) { const y = c.position.y + Math.sin(tick / 15 + c.position.x) * 3 * sway(); dot(c.position.x, y, 12, "#ffcd3c"); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke(); dot(c.position.x, y, 5, "#f0a500"); }
@@ -206,7 +206,7 @@ export function createSim(canvas, onEvent, level = null) {
   }
   function drawHud() {
     rr(10, 10, 300, 40, 12, "rgba(255,255,255,.92)");
-    ctx.font = "700 22px 'Baloo 2', sans-serif"; ctx.textBaseline = "middle";
+    ctx.font = "700 22px Figtree, sans-serif"; ctx.textBaseline = "middle";
     for (let i = 0; i < 3; i++) { ctx.fillStyle = i < hearts ? "#ff5d73" : "rgba(0,0,0,.2)"; ctx.fillText("♥", 22 + i * 26, 31); }
     dot(115, 30, 10, "#ffcd3c"); ctx.fillStyle = INK; ctx.fillText(`${coins}/${coinBodies.length}`, 131, 31);
     ctx.font = "600 15px Lexend, sans-serif"; ctx.fillText(title, 185, 31, 120);
