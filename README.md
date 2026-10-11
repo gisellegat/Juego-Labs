@@ -135,4 +135,4 @@ docs/screens/        screenshots used in this README
 
 The Figma file has every screen in English and Spanish (an "Español (ES)" group), plus components and a 600×600 character-drawing template whose part frames match `PARTS` and `JOINTS` in `src/character.js`. Colors in Figma match the CSS tokens at the top of `src/styles.css`.
 
-Fonts match between Figma and the game: Puffin Arcade Nerf (logo), Puffin Arcade Regular (page titles), Figtree Medium (subheadings and buttons) and Lexend (body text). Puffin Arcade loads from an Adobe Fonts web project; Figtree and Lexend from Google Fonts.
+The header logo and favicon are image files exported from Figma (`src/assets/logo.png`, `public/favicon.png`); Figma doesn't sync to the code, so new Figma images have to be exported and added the same way. Fonts match between Figma and the game: Puffin Arcade Regular (page titles), Figtree Medium (subheadings and buttons) and Lexend (body text). Puffin Arcade loads from an Adobe Fonts web project; Figtree and Lexend from Google Fonts.

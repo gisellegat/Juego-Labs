@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
+import logo from "./assets/logo.png";
 import { Dialog } from "@base-ui/react/dialog";
 import { Toaster, toast } from "sonner";
 import { T, fmt } from "./i18n.js";
@@ -60,7 +61,7 @@ export default function App() {
     <>
       <header>
         <div>
-          <h1 className="logo"><span>Juego</span> Labs</h1>
+          <h1 className="logo"><img src={logo} alt="Juego Labs" width="1200" height="363" /></h1>
           <p className="tag">{t.tagline}</p>
         </div>
         <div className="lang" role="group" aria-label="Language / Idioma">
