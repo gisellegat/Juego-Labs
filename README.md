@@ -10,19 +10,21 @@
 
 ## How Juego Labs Works
 
-- **Make your hero.** Pick a robot, cat or astronaut, or draw your own one body part at a time. The game turns your drawing into a floppy, physics-powered puppet.
+- **Make your hero.** Pick a robot, cat or astronaut, or draw your own one body part at a time. The game turns your drawing into a puppet that walks, jumps and waves, and always stays on its feet.
 - **Snap code blocks.** Like Scratch: "when space is pressed → jump 12". A terminal under the screen shows each block as real JavaScript or as a real HTML page.
+- **Learn on a Game Boy.** "Let's play" puts the 7 How-it-works cards next to the Game Boy. Each card asks for one thing (press Run, jump, switch the terminal to HTML…), checks that you did it, and moves on.
 - **Play on a Game Boy.** The game lives inside a Game Boy with a touch D-pad and A/B buttons. Tap ⛶ to pop it full screen on a tablet or phone; tap ✕ to go back.
 
 ![Game Boy in full screen on a phone held sideways](docs/screens/fullscreen-phone-landscape.png)
 
 ## Level Up as You Learn
 
-- **6 Mario-style levels** on a world map: grab coins, stomp slimes, bats and a boss, open a password gate with code, and float on the moon.
+- **Then face the monsters.** After the last card, 6 Mario-style levels test what you learned: grab coins, stomp slimes, bats and a boss, and open a password gate with code.
 - **Levels unlock one by one**, and your stars stay saved in your browser.
-- **A hands-on HTML tutorial** in 7 steps: type real HTML, watch your page appear, then press "Check my code" for ✓ and ✗ feedback.
+- **Tutorial** plays the same cards one by one, like a slideshow. At the end, **Write real HTML** opens 7 hands-on steps: type HTML, watch your page appear, and press "Check my code" for ✓ and ✗ feedback.
 
 ![World map with cleared, open and locked levels](docs/screens/map.png)
+![Tutorial cards](docs/screens/tutorial-cards.png)
 ![Hands-on HTML tutorial with live preview and checker](docs/screens/tutorial.png)
 
 ## Who It's For
@@ -45,11 +47,10 @@
 - **No test credentials needed.** There are no accounts, logins or API keys. Everything runs in the browser, and saved characters and progress stay in that browser only.
 - **Quick tour (2 minutes):**
   1. Click a character. In the popup, choose **Let's play!**
-  2. Pick **Grassy Start**. Walk with the arrow keys (or the D-pad), jump with space (or **A**). **B** makes your buddy wave.
-  3. Tap **⛶** on the Game Boy for full screen; ✕ or Esc exits.
-  4. Under the stage, switch the terminal between **JavaScript** and **HTML** to see what your blocks mean.
-  5. Click **Tutorial**, type `<button>Run</button>`, and press **Check my code**.
-  6. Press **ES** at the top right: everything switches to Spanish.
+  2. Follow the 7 cards beside the Game Boy: press ▶ Run, pick a background, tap ⛶ (✕ or Esc exits), jump with space or **A**, switch the terminal to **HTML**, change the jump block from 12 to 20, and drag your buddy.
+  3. Click **Face the monsters →** and play **Grassy Start**: arrow keys or the D-pad to walk, space or **A** to jump, **B** to wave.
+  4. Back on the map, click **Tutorial** to watch the cards cycle, then **Write real HTML →**: type `<button>Run</button>` and press **Check my code**.
+  5. Press **ES** at the top right: everything switches to Spanish.
 - **Level 3 password:** use a "say" block with the word `open` (or `abre`) next to the gate.
 
 ## Run it yourself
@@ -73,7 +74,7 @@ Every push to `main` is tested, built and published to GitHub Pages by `.github/
 | Part | What we used |
 |------|--------------|
 | Frontend | React 19 + Vite |
-| Physics | Matter.js (ragdoll joints, collisions, drag-and-fling) |
+| Physics | Matter.js (collisions, drag-and-fling; the character is one rigid, always-upright body) |
 | Block coding | Google Blockly (Scratch-style "Zelos" blocks) |
 | Drawing and game rendering | HTML5 Canvas API |
 | Dialogs | base-ui (accessible popups: focus trapping, Esc, focus return) |
@@ -99,7 +100,7 @@ Every push to `main` is tested, built and published to GitHub Pages by `.github/
 ```
 src/
   App.jsx            screens, language, saved characters, the Let's play / Tutorial popup, level progress
-  components/        Pick, Draw, Map (world map), Play (Game Boy, levels, terminal), Tutorial, SceneThumb
+  components/        Pick, Draw, Map, Play (Game Boy, guided cards, levels, terminal), Cards (cycling tutorial), LessonCard, Tutorial (write HTML), SceneThumb
   i18n.js            all English + Spanish text and lesson cards
   levels.js          the 6 adventure levels (blocks, coins, monsters, spikes, gate, flag)
   tutorial.js        hands-on HTML steps and the checks that grade them

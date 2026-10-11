@@ -223,3 +223,28 @@ input[type=range]{accent-color:var(--accent);width:min(120px,30vw)}
 /* Sonner toasts in the house style */
 .jl-toast{background:var(--ink)!important;color:var(--paper)!important;border:0!important;border-radius:999px!important;font:600 .95rem var(--f-body)!important;justify-content:center}
 @media (prefers-reduced-motion:reduce){ .modal,.overlay h2{transition-property:opacity} }
+
+/* apple-design pass: pressed arms light up while a thumb rolls across the D-pad; no long-press callout;
+   full screen dims and softly blurs the page behind (dim to focus), solid when transparency is reduced */
+.dpad button.on{filter:brightness(1.35)}
+.gb{-webkit-touch-callout:none}
+.gbwrap.full{-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+@media (prefers-reduced-transparency:reduce){ .gbwrap.full{background:rgba(10,14,24,.95);-webkit-backdrop-filter:none;backdrop-filter:none} }
+
+/* guided cards beside the Game Boy, and the cycling Tutorial cards */
+.stagepane > .lesson{box-shadow:3px 3px 0 var(--ink)}
+.lesson .top .hint{margin-left:auto}
+.lesson.done{border-color:var(--b-world);box-shadow:3px 3px 0 var(--b-world)}
+.done-badge{margin:0;font:800 1.2rem var(--f-display);color:var(--ink)}
+.lesson.finish{text-align:center;justify-items:center;background:var(--hi);color:var(--b-ink)}
+.lesson.finish h3{font-size:1.4rem}
+.lesson{animation:card-in 260ms var(--ease-out)}
+@keyframes card-in{from{opacity:0;transform:translateX(16px)}}
+.cards-page .carousel{position:relative;max-width:640px}
+.cards-page .lesson{font-size:1.05rem}
+.timer{position:absolute;left:18px;right:18px;bottom:8px;height:4px;border-radius:2px;background:var(--accent);transform-origin:left;animation:timer linear forwards;opacity:.6}
+@keyframes timer{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.dots{display:inline-flex;gap:6px;margin-left:6px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--accent)}
+@media (prefers-reduced-motion:reduce){ .lesson{animation:card-fade 200ms ease-out} @keyframes card-fade{from{opacity:0}} .timer{display:none} }

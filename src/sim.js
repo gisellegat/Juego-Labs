@@ -4,7 +4,7 @@ import Matter from "matter-js";
 import { PARTS, JOINTS, INK } from "./character.js";
 import { drawScene, GROUND } from "./scenes.js";
 
-const { Engine, Bodies, Body, Composite, Constraint, Mouse, MouseConstraint, Events, Query, Vector } = Matter;
+const { Engine, Bodies, Body, Composite, Mouse, MouseConstraint, Events, Query, Vector } = Matter;
 export const W = 960, H = 540;
 const FLOOR = H - GROUND, TILE = 40;
 const TOY_COLOR = { ball: "#ff5d73", box: "#ffcd3c", balloon: "#a26bff", plank: "#c98d4b" };
@@ -17,6 +17,8 @@ export const sleep = ms => new Promise(r => setTimeout(r, ms));
 export function createSim(canvas, onEvent, level = null) {
   const ctx = canvas.getContext("2d");
   const css = getComputedStyle(document.documentElement), tok = n => css.getPropertyValue(n).trim();
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)"); // read live: decorative motion stops, gameplay stays
+  const sway = () => (reduce.matches ? 0 : 1);
   const engine = Engine.create(); engine.constraintIterations = 4; const world = engine.world;
   const K = level ? 0.8 : 1.25, startX = level ? 140 : W / 2, worldW = level ? level.width : W;
   const stat = (x, y, w, h, label, o = {}) => Bodies.rectangle(x, y, w, h, { isStatic: true, label, ...o });
@@ -26,12 +28,11 @@ export function createSim(canvas, onEvent, level = null) {
   const mc = MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2, render: { visible: false } } });
   Composite.add(world, mc);
 
-  let char = null, imgs = null, props = [], bounce = 0.2, bubble = null, fx = [], scene = level?.scene || "park", raf = 0, title = "";
-  let camX = 0, hearts = 3, coins = 0, hurtUntil = 0, done = false, lastGround = 0, gate = null, tick = 0;
+  let char = null, pose = null, imgs = null, props = [], bounce = 0.2, bubble = null, fx = [], scene = level?.scene || "park", raf = 0, title = "";
+  let camX = 0, hearts = 3, coins = 0, hurtUntil = 0, done = false, lastGround = 0, lastMove = -99, gate = null, tick = 0;
   const monsters = [], coinBodies = [];
 
   if (level) {
-    engine.gravity.y = level.gravity ?? 1;
     const tile = o => ({ ...o, plugin: { tile: true } });
     for (const [a, b] of level.ground) Composite.add(world, stat((a + b) / 2, FLOOR + TILE / 2, b - a, TILE, "ground", tile({ friction: 0.9 })));
     for (const [x, y, w] of level.platforms) Composite.add(world, stat(x + w / 2, y + TILE / 2, w, TILE, "ground", tile({ friction: 0.9 })));
@@ -46,20 +47,28 @@ export function createSim(canvas, onEvent, level = null) {
     }
   }
 
+  // The buddy is ONE rigid body built from its six parts: it can't fall apart at the joints, and with
+  // infinite rotational inertia it always stands upright. Arms and legs only swing in the drawing (drawChar).
   function spawnChar(parts) {
     if (parts) imgs = parts;
-    if (char) Composite.remove(world, [...char.bodies, ...char.cons]);
-    const group = Body.nextGroup(true), x0 = startX - 100 * K, y0 = FLOOR - 192 * K - 4, by = {};
+    if (char) Composite.remove(world, char.body);
+    const x0 = startX - 100 * K, y0 = FLOOR - 192 * K - 4, by = {};
+    const pivot = Object.fromEntries(JOINTS.map(([, b, x, y]) => [b, { x, y }])); pivot.head = { x: 100, y: 56 };
     for (const p of PARTS) {
       const cx = x0 + (p.x + p.w / 2) * K, cy = y0 + (p.y + p.h / 2) * K;
-      const o = { collisionFilter: { group }, friction: 0.8, frictionAir: 0.01, restitution: bounce, density: p.id === "torso" ? 0.002 : 0.0015 };
+      const o = { friction: 0, frictionStatic: 0, restitution: bounce, density: p.id === "torso" ? 0.002 : 0.0015 }; // no foot friction: walking is set directly, stopping is handled below
       const b = p.round ? Bodies.circle(cx, cy, (p.w * K) / 2, o) : Bodies.rectangle(cx, cy, p.w * K, p.h * K, { ...o, chamfer: { radius: 5 } });
-      b.plugin = { char: true, leg: p.id.startsWith("leg"), img: imgs[p.id], w: p.w * K, h: p.h * K }; by[p.id] = b;
+      // offset from the part's centre to the joint it swings around
+      const pv = pivot[p.id], off = pv ? { x: (pv.x - (p.x + p.w / 2)) * K, y: (pv.y - (p.y + p.h / 2)) * K } : null;
+      b.plugin = { char: true, leg: p.id.startsWith("leg"), img: imgs[p.id], w: p.w * K, h: p.h * K, off };
+      by[p.id] = b;
     }
-    const cons = JOINTS.map(([a, b, x, y]) => { const A = by[a], B = by[b], pt = { x: x0 + x * K, y: y0 + y * K };
-      return Constraint.create({ bodyA: A, bodyB: B, pointA: Vector.sub(pt, A.position), pointB: Vector.sub(pt, B.position), length: 0, stiffness: 0.95, damping: 0.05 }); });
-    char = { parts: by, bodies: Object.values(by), cons };
-    Composite.add(world, [...char.bodies, ...cons]);
+    const body = Body.create({ parts: Object.values(by), friction: 0, frictionStatic: 0, frictionAir: 0.01, restitution: bounce });
+    Body.setInertia(body, Infinity);
+    body.plugin = { char: true };
+    char = { body, parts: by, bodies: [body] };
+    pose = { walk: 0, waveUntil: 0, spin: null };
+    Composite.add(world, body);
   }
   function spawnProp(kind, x = camX + 160 + Math.random() * (W - 320), y = 60) {
     if (!TOY_COLOR[kind]) return;
@@ -72,8 +81,7 @@ export function createSim(canvas, onEvent, level = null) {
     props.push(b); Composite.add(world, b);
     if (props.length > 60) Composite.remove(world, props.shift()); // keep it fast on school laptops
   }
-  const setGravity = n => { engine.gravity.y = clamp(n, -2, 3); return engine.gravity.y; };
-  function setBounce(v) { bounce = v; for (const b of Composite.allBodies(world)) if (!b.isStatic) b.restitution = b.plugin.prop === "ball" ? Math.max(v, 0.75) : v; }
+  function setBounce(v) { bounce = v; for (const b of Composite.allBodies(world)) if (!b.isStatic) for (const q of b.parts) q.restitution = b.plugin.prop === "ball" ? Math.max(v, 0.75) : v; }
 
   function hurt(from) {
     const now = performance.now();
@@ -87,15 +95,15 @@ export function createSim(canvas, onEvent, level = null) {
   Events.on(engine, "beforeUpdate", () => {
     tick++;
     for (const b of props) if (b.plugin.lift) Body.applyForce(b, b.position, { x: 0, y: -engine.gravity.y * engine.gravity.scale * b.mass * 1.5 });
+    // let go of the arrows and the buddy slows to a stop on the ground (no friction, so it would glide forever)
+    if (char && tick - lastMove > 6 && tick - lastGround < 8) Body.setVelocity(char.body, { x: char.body.velocity.x * 0.8, y: char.body.velocity.y });
     if (!level || !char) return;
-    const torso = char.parts.torso;
-    Body.setAngularVelocity(torso, torso.angularVelocity * 0.9 - torso.angle * 0.08); // keep the buddy mostly upright
     for (const b of monsters) {
       const p = b.plugin, { m } = p;
       if (m.kind === "bat") Body.setPosition(b, { x: m.x, y: p.y0 + Math.sin(tick / 40 + m.x) * (m.range / 2) });
       else { const nx = b.position.x + p.dir * MONSTER[m.kind][2]; if (nx > m.x + m.range || nx < m.x) p.dir *= -1; Body.setPosition(b, { x: nx, y: b.position.y }); }
     }
-    if (torso.position.y > H + 150 && !done) { // fell in a pit
+    if (char.parts.torso.position.y > H + 150 && !done) { // fell in a pit
       hurtUntil = 0; hurt(null);
       if (!done) { spawnChar(); hurtUntil = performance.now() + 1200; }
     }
@@ -110,7 +118,7 @@ export function createSim(canvas, onEvent, level = null) {
       if (p.plugin.leg && q.label === "ground") fire("ground");
       if (p.plugin.char && q.plugin.prop) fire("toy");
       if (!p.plugin.char || done) continue;
-      if (q.label === "coin" && !q.plugin.taken) { q.plugin.taken = true; Composite.remove(world, q); coins++; }
+      if (q.label === "coin" && !q.plugin.taken) { q.plugin.taken = true; Composite.remove(world, q); coins++; fx.push({ x: q.position.x, y: q.position.y, t: performance.now(), coin: true }); }
       if (q.label === "flag") {
         if (monsters.some(m => m.plugin.m.kind === "boss" && m.plugin.hp > 0)) { fire("needBoss"); continue; } // beat the boss first
         done = true; onEvent("win", { coins, total: coinBodies.length });
@@ -127,16 +135,20 @@ export function createSim(canvas, onEvent, level = null) {
     }
   });
   Events.on(mc, "mousedown", () => { if (char && Query.point(char.bodies, mouse.position).length) onEvent("click"); });
-  if (level) Events.on(mc, "startdrag", e => { if (e.body.plugin.char) { mc.body = null; mc.constraint.bodyB = null; } }); // no carrying yourself to the flag
+  Events.on(mc, "startdrag", e => {
+    if (!e.body.plugin.char) return;
+    if (level) { mc.body = null; mc.constraint.bodyB = null; } // no carrying yourself to the flag
+    else onEvent("drag");
+  });
 
   // What each action block does. Missing character = nothing to move yet.
   const act = {
     jump: n => { if (!char || (level && tick - lastGround > 8)) return; // levels: only jump from the ground (within 8 physics steps), like Mario
       char.bodies.forEach(b => Body.setVelocity(b, { x: b.velocity.x, y: -clamp(n, 0, 40) })); },
-    move: n => char?.bodies.forEach(b => Body.setVelocity(b, { x: clamp(n, -30, 30), y: b.velocity.y })),
-    spin: n => char && Body.setAngularVelocity(char.parts.torso, clamp(n, -1, 1)),
-    wave: async () => { if (!char) return; const { armL, armR } = char.parts;
-      for (let i = 0; i < 3; i++) { Body.setAngularVelocity(armL, -0.5); Body.setAngularVelocity(armR, 0.5); await sleep(170); Body.setAngularVelocity(armL, 0.5); Body.setAngularVelocity(armR, -0.5); await sleep(170); } },
+    move: n => { if (!char) return; lastMove = tick; Body.setVelocity(char.body, { x: clamp(n, -30, 30), y: char.body.velocity.y }); },
+    // spin and wave are drawn, not simulated, so the body stays upright and in one piece
+    spin: async n => { if (!char) return; pose.spin = { t: performance.now(), dir: Number(n) < 0 ? -1 : 1 }; await sleep(600); },
+    wave: async () => { if (!char) return; pose.waveUntil = performance.now() + 1000; await sleep(1000); },
     say: t => {
       bubble = { text: String(t).slice(0, 40), until: performance.now() + 2200 };
       if (gate && char && Math.abs(char.parts.torso.position.x - gate.position.x) < 360 && level.password.includes(String(t).trim().toLowerCase().replace(/[!¡.]/g, ""))) {
@@ -144,7 +156,6 @@ export function createSim(canvas, onEvent, level = null) {
       }
     },
     spawn: k => { if (!char) return spawnProp(k); const p = char.parts.torso.position; spawnProp(k, clamp(p.x + (Math.random() - 0.5) * 160, 40, worldW - 40), Math.max(40, p.y - 200)); },
-    gravity: n => setGravity(n),
     explode: n => { if (!char) return; const c = char.parts.torso.position; fx.push({ x: c.x, y: c.y, t: performance.now() });
       for (const b of Composite.allBodies(world)) if (!b.isStatic && !b.plugin.char) { const d = Vector.sub(b.position, c), len = Vector.magnitude(d) || 1;
         Body.setVelocity(b, Vector.add(b.velocity, Vector.mult(Vector.normalise(d), (clamp(n, 0, 5) * 18) / (1 + len / 120)))); } },
@@ -189,8 +200,8 @@ export function createSim(canvas, onEvent, level = null) {
       for (let y = min.y; y < max.y; y += 26) for (let x = min.x + ((y / 26) % 2 ? 0 : -10); x < max.x; x += 20) rr(Math.max(min.x, x), y, 20, 26, 2, "#9aa3b5");
       ctx.font = "800 28px 'Baloo 2', sans-serif"; ctx.fillStyle = INK; ctx.textAlign = "center"; ctx.fillText("?", (min.x + max.x) / 2, FLOOR - 140); ctx.textAlign = "start"; }
     const fx0 = level.flag; ctx.fillStyle = INK; ctx.fillRect(fx0 - 3, FLOOR - 220, 6, 220);
-    ctx.beginPath(); ctx.moveTo(fx0 + 3, FLOOR - 218); ctx.lineTo(fx0 + 70, FLOOR - 196 + Math.sin(tick / 10) * 4); ctx.lineTo(fx0 + 3, FLOOR - 172); ctx.closePath(); ctx.fillStyle = tok("--accent"); ctx.fill(); ctx.stroke();
-    for (const c of coinBodies) if (!c.plugin.taken) { const y = c.position.y + Math.sin(tick / 15 + c.position.x) * 3; dot(c.position.x, y, 12, "#ffcd3c"); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke(); dot(c.position.x, y, 5, "#f0a500"); }
+    ctx.beginPath(); ctx.moveTo(fx0 + 3, FLOOR - 218); ctx.lineTo(fx0 + 70, FLOOR - 196 + Math.sin(tick / 10) * 4 * sway()); ctx.lineTo(fx0 + 3, FLOOR - 172); ctx.closePath(); ctx.fillStyle = tok("--accent"); ctx.fill(); ctx.stroke();
+    for (const c of coinBodies) if (!c.plugin.taken) { const y = c.position.y + Math.sin(tick / 15 + c.position.x) * 3 * sway(); dot(c.position.x, y, 12, "#ffcd3c"); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke(); dot(c.position.x, y, 5, "#f0a500"); }
     for (const b of monsters) if (b.plugin.hp > 0 && Composite.get(world, b.id, "body")) drawMonster(b);
   }
   function drawHud() {
@@ -200,9 +211,31 @@ export function createSim(canvas, onEvent, level = null) {
     dot(115, 30, 10, "#ffcd3c"); ctx.fillStyle = INK; ctx.fillText(`${coins}/${coinBodies.length}`, 131, 31);
     ctx.font = "600 15px Lexend, sans-serif"; ctx.fillText(title, 185, 31, 120);
   }
+  function drawChar(now) {
+    const vx = char.body.velocity.x, onGround = tick - lastGround < 8;
+    if (onGround && !reduce.matches) pose.walk += Math.abs(vx) * 0.06;
+    const stride = onGround ? Math.min(1, Math.abs(vx) / 4) : 0, swing = Math.sin(pose.walk) * 0.45 * stride;
+    const waving = now < pose.waveUntil, flap = Math.sin(now / 80) * 0.35;
+    const angle = { legL: swing, legR: -swing, armL: waving ? 2.5 - flap : -swing * 0.8, armR: waving ? -2.5 + flap : swing * 0.8, head: 0, torso: 0 };
+    const torso = char.parts.torso.position;
+    ctx.save();
+    if (pose.spin) { // one full turn, eased out, then back to standing
+      const k = Math.min(1, (now - pose.spin.t) / 600);
+      if (k >= 1) pose.spin = null;
+      else { ctx.translate(torso.x, torso.y); ctx.rotate(pose.spin.dir * Math.PI * 2 * (1 - (1 - k) ** 3)); ctx.translate(-torso.x, -torso.y); }
+    }
+    for (const id of ["legL", "legR", "armR", "torso", "armL", "head"]) {
+      const b = char.parts[id], { img, w, h, off } = b.plugin;
+      ctx.save();
+      if (off) { ctx.translate(b.position.x + off.x, b.position.y + off.y); ctx.rotate(angle[id]); ctx.translate(-off.x, -off.y); }
+      else ctx.translate(b.position.x, b.position.y);
+      ctx.drawImage(img, -w / 2, -h / 2, w, h);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
   function draw() {
     const now = performance.now();
-    if (char) camX = clamp(char.parts.torso.position.x - W * 0.4, 0, worldW - W);
     Mouse.setOffset(mouse, { x: camX, y: 0 });
     drawScene(ctx, scene, W, H, tok);
     if (level) { ctx.fillStyle = "rgba(20,20,30,.85)"; ctx.fillRect(0, FLOOR, W, GROUND); } // pits are dark; blocks cover the rest
@@ -210,16 +243,14 @@ export function createSim(canvas, onEvent, level = null) {
     if (level) drawLevel();
     const ink = tok("--ink"); ctx.lineJoin = "round";
     for (const b of props) {
-      if (b.plugin.lift) { ctx.strokeStyle = INK; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(b.position.x, b.position.y + 26); ctx.lineTo(b.position.x + Math.sin(now / 300) * 6, b.position.y + 70); ctx.stroke(); }
+      if (b.plugin.lift) { ctx.strokeStyle = INK; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(b.position.x, b.position.y + 26); ctx.lineTo(b.position.x + Math.sin(now / 300) * 6 * sway(), b.position.y + 70); ctx.stroke(); }
       ctx.beginPath(); b.vertices.forEach((v, i) => (i ? ctx.lineTo(v.x, v.y) : ctx.moveTo(v.x, v.y))); ctx.closePath();
       ctx.fillStyle = b.plugin.color; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.stroke();
     }
     if (char) {
-      ctx.globalAlpha = now < hurtUntil && Math.floor(now / 100) % 2 ? 0.35 : 1; // blink while hurt
-      for (const id of ["legL", "legR", "armR", "torso", "armL", "head"]) {
-        const b = char.parts[id], { img, w, h } = b.plugin;
-        ctx.save(); ctx.translate(b.position.x, b.position.y); ctx.rotate(b.angle); ctx.drawImage(img, -w / 2, -h / 2, w, h); ctx.restore();
-      }
+      // hurt: 2.5 blinks/s (WCAG: under 3 flashes/s); reduced motion holds a steady fade instead
+      ctx.globalAlpha = now >= hurtUntil ? 1 : reduce.matches ? 0.6 : Math.floor(now / 200) % 2 ? 0.35 : 1;
+      drawChar(now);
       ctx.globalAlpha = 1;
     }
     if (mc.body) {
@@ -227,7 +258,12 @@ export function createSim(canvas, onEvent, level = null) {
       ctx.strokeStyle = tok("--accent"); ctx.lineWidth = 2; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.position.x, mouse.position.y); ctx.stroke(); ctx.setLineDash([]);
     }
     fx = fx.filter(f => now - f.t < 500);
-    for (const f of fx) { const k = (now - f.t) / 500; ctx.strokeStyle = `rgba(255,140,60,${1 - k})`; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(f.x, f.y, 20 + k * 220, 0, 7); ctx.stroke(); }
+    for (const f of fx) {
+      const k = Math.min(1, (now - f.t) / (f.coin ? 200 : 500)), e = 1 - (1 - k) ** 3; // ease-out: fast burst, soft finish
+      const grow = reduce.matches ? 0 : e;
+      ctx.strokeStyle = f.coin ? `rgba(255,205,60,${1 - e})` : `rgba(255,140,60,${1 - e})`; ctx.lineWidth = f.coin ? 4 : 6;
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.coin ? 12 + grow * 10 : 20 + grow * 220, 0, 7); ctx.stroke();
+    }
     if (char && bubble && now < bubble.until) {
       const hd = char.parts.head.position; ctx.font = "600 20px Lexend, system-ui, sans-serif"; ctx.textBaseline = "middle";
       const w = ctx.measureText(bubble.text).width + 28, x = clamp(hd.x - w / 2, camX + 6, camX + W - w - 6), y = Math.max(6, hd.y - 92);
@@ -237,11 +273,23 @@ export function createSim(canvas, onEvent, level = null) {
     ctx.restore();
     if (level) drawHud();
   }
-  const frame = () => { Engine.update(engine, 1000 / 60); draw(); raf = requestAnimationFrame(frame); };
+  // Fixed 60 Hz game time, whatever the screen's refresh rate: 120 Hz tablets don't play at double speed,
+  // slow laptops don't play in slow motion. Capped so a backgrounded tab doesn't fast-forward on return.
+  const STEP = 1000 / 60;
+  let last = performance.now(), acc = 0;
+  const frame = now => {
+    acc += Math.min(now - last, 250); last = now;
+    while (acc >= STEP) {
+      Engine.update(engine, STEP); acc -= STEP;
+      // camera eases toward the buddy instead of copying every ragdoll wobble (and pans back after a pit)
+      if (char) camX += (clamp(char.parts.torso.position.x - W * 0.4, 0, worldW - W) - camX) * 0.15;
+    }
+    draw(); raf = requestAnimationFrame(frame);
+  };
   raf = requestAnimationFrame(frame);
 
   return {
-    act, spawnChar, spawnProp, setGravity, setBounce,
+    act, spawnChar, spawnProp, setBounce,
     setScene: s => { scene = s; },
     setTitle: s => { title = s; },
     clearToys: () => { Composite.remove(world, props); props = []; },

@@ -18,12 +18,12 @@ test("correct answers pass, in English or Spanish", () => {
   assert.ok(passes(2, '<div style="background: skyblue; width: 100%"></div>'));
   assert.ok(passes(3, '<button onclick="saltar()">Saltar</button>'));
   assert.ok(passes(4, "<ol><li>say</li><li>jump</li><li>wave</li></ol>"));
-  assert.ok(passes(5, '<input type="range" min="-1" max="2">'));
+  assert.ok(passes(5, '<input type="range" min="0" max="30">'));
   assert.ok(passes(6, '<canvas id="stage" width="960" height="540"></canvas>'));
 });
 
 test("near misses are caught", () => {
   assert.equal(passes(0, "<button>Stop</button>"), false);
-  assert.equal(passes(5, '<input type="range" min="0" max="2">'), false);
+  assert.equal(passes(5, '<input type="range" min="-1" max="2">'), false);
   assert.equal(passes(6, '<canvas id="game" width="960" height="540"></canvas>'), false);
 });

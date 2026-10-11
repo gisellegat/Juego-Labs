@@ -19,7 +19,7 @@ export const T = {
     badImg: "That file isn't a picture we can open. Try a PNG or JPG.",
     noSave: "Your browser won't let us save, so this character lasts until you close the page.",
     run: "▶ Run", stop: "■ Stop", reset: "Reset", newChar: "Change character", background: "Background:",
-    toys: "Toys:", clearToys: "Clear toys", gravity: "Gravity", bounce: "Bounce",
+    toys: "Toys:", clearToys: "Clear toys", bounce: "Bounce",
     dragHint: "Drag anything with the mouse or your finger. Fling your buddy!",
     codeTitle: "Your code", codeHint: "Pick a color on the left, then drag blocks into the space. Snap them under a yellow block to make a script.",
     terminalTitle: "Terminal: your blocks as code", terminalEmpty: "Snap a block under a yellow event block to see its code here.",
@@ -28,9 +28,9 @@ export const T = {
     cat_events: "Events", cat_motion: "Motion", cat_looks: "Looks", cat_world: "World", cat_control: "Control",
     b_when_run: "when ▶ Run clicked", b_when_key: "when %1 key pressed", b_when_click: "when buddy clicked", b_when_ground: "when feet touch ground", b_when_toy: "when touching a toy",
     b_jump: "jump %1", b_move: "move %1 (− = left)", b_spin: "spin %1", b_wave: "wave arms", b_say: "say %1", b_spawn: "spawn %1",
-    b_gravity: "set gravity to %1", b_explode: "explode, power %1", b_wait: "wait %1 seconds", b_repeat: "repeat %1 times", b_forever: "forever",
+    b_explode: "explode, power %1", b_wait: "wait %1 seconds", b_repeat: "repeat %1 times", b_forever: "forever",
     choiceTitle: "Ready, {name}!", choiceSub: "What do you want to do first?",
-    choicePlaySub: "Run, jump and stomp monsters through 6 levels.", choiceTut: "Tutorial", choiceTutSub: "Write real HTML and watch it come alive.", close: "Close",
+    choicePlaySub: "Learn on the Game Boy, card by card, then face the monsters.", choiceTut: "Tutorial", choiceTutSub: "Watch how the game works, one card at a time.", close: "Close",
     mapTitle: "World map", mapSub: "Clear a level to unlock the next one.", level: "Level {n}", locked: "Locked", cleared: "Cleared",
     freePlay: "Free play", freePlaySub: "No monsters. Just you, toys and your code.", backToMap: "← Map", goal: "Goal:",
     win: "Level cleared!", winCoins: "You got {coins} of {total} coins.", nextLevel: "Next level →", replay: "Play again",
@@ -38,7 +38,7 @@ export const T = {
     tutTitle: "HTML tutorial", tutSub: "Type real HTML on the left. Your page appears on the right. Press Check when you're ready.",
     step: "Step {n} of {m}", yourCode: "Your code", yourPage: "Your page", task: "Your task:",
     check: "Check my code", passed: "You did it!", notYet: "Almost! Fix the items with ✗.", nextStep: "Next step →", startOver: "Start over",
-    tutDone: "Tutorial complete! Now go play.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "Beat the boss first!", fullScreen: "Full screen", exitFull: "Exit full screen", dpad: "Arrow pad", gbRun: "RUN", gbStop: "STOP", gbA: "A button: jump (space)", gbB: "B button: same as clicking your buddy"
+    tutDone: "Tutorial complete! Now go play.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "Beat the boss first!", guideTitle: "Learn by playing", guideStep: "Card {n} of {m}", guideDo: "Do it:", guideDone: "Nice! ✓", guideFinish: "You know how it works!", guideFinishSub: "Now test what you learned against the monsters.", fightMonsters: "Face the monsters →", skipGuide: "Skip to the monsters", cardsTitle: "How it works", cardsSub: "Read along. The cards change by themselves.", pause: "Pause", resume: "Play", prev: "Previous", next: "Next", writeHtml: "Write real HTML →", tryIt: "Try it:", fullScreen: "Full screen", exitFull: "Exit full screen", dpad: "Arrow pad", gbRun: "RUN", gbStop: "STOP", gbA: "A button: jump (space)", gbB: "B button: same as clicking your buddy"
   },
   es: {
     tagline: "Aprende a darle vida a tu imaginación con código",
@@ -59,7 +59,7 @@ export const T = {
     badImg: "No podemos abrir ese archivo. Prueba con un PNG o JPG.",
     noSave: "Tu navegador no nos deja guardar, así que este personaje dura hasta que cierres la página.",
     run: "▶ Ejecutar", stop: "■ Detener", reset: "Reiniciar", newChar: "Cambiar personaje", background: "Fondo:",
-    toys: "Juguetes:", clearToys: "Quitar juguetes", gravity: "Gravedad", bounce: "Rebote",
+    toys: "Juguetes:", clearToys: "Quitar juguetes", bounce: "Rebote",
     dragHint: "Arrastra lo que quieras con el ratón o el dedo. ¡Lanza a tu amigo!",
     codeTitle: "Tu código", codeHint: "Elige un color a la izquierda y arrastra bloques al espacio. Encájalos debajo de un bloque amarillo para hacer un programa.",
     terminalTitle: "Terminal: tus bloques como código", terminalEmpty: "Encaja un bloque debajo de un bloque amarillo de evento para ver su código aquí.",
@@ -68,9 +68,9 @@ export const T = {
     cat_events: "Eventos", cat_motion: "Movimiento", cat_looks: "Apariencia", cat_world: "Mundo", cat_control: "Control",
     b_when_run: "al hacer clic en ▶ Ejecutar", b_when_key: "al presionar la tecla %1", b_when_click: "al hacer clic en mi amigo", b_when_ground: "cuando los pies tocan el suelo", b_when_toy: "al tocar un juguete",
     b_jump: "saltar %1", b_move: "mover %1 (− = izquierda)", b_spin: "girar %1", b_wave: "agitar los brazos", b_say: "decir %1", b_spawn: "crear %1",
-    b_gravity: "poner gravedad en %1", b_explode: "explotar, fuerza %1", b_wait: "esperar %1 segundos", b_repeat: "repetir %1 veces", b_forever: "por siempre",
+    b_explode: "explotar, fuerza %1", b_wait: "esperar %1 segundos", b_repeat: "repetir %1 veces", b_forever: "por siempre",
     choiceTitle: "¡Listo, {name}!", choiceSub: "¿Qué quieres hacer primero?",
-    choicePlaySub: "Corre, salta y aplasta monstruos en 6 niveles.", choiceTut: "Tutorial", choiceTutSub: "Escribe HTML de verdad y míralo cobrar vida.", close: "Cerrar",
+    choicePlaySub: "Aprende en el Game Boy, tarjeta por tarjeta, y luego enfrenta a los monstruos.", choiceTut: "Tutorial", choiceTutSub: "Mira cómo funciona el juego, una tarjeta a la vez.", close: "Cerrar",
     mapTitle: "Mapa del mundo", mapSub: "Supera un nivel para desbloquear el siguiente.", level: "Nivel {n}", locked: "Bloqueado", cleared: "Superado",
     freePlay: "Juego libre", freePlaySub: "Sin monstruos. Solo tú, juguetes y tu código.", backToMap: "← Mapa", goal: "Meta:",
     win: "¡Nivel superado!", winCoins: "Conseguiste {coins} de {total} monedas.", nextLevel: "Siguiente nivel →", replay: "Jugar otra vez",
@@ -78,39 +78,39 @@ export const T = {
     tutTitle: "Tutorial de HTML", tutSub: "Escribe HTML de verdad a la izquierda. Tu página aparece a la derecha. Presiona Revisar cuando estés listo.",
     step: "Paso {n} de {m}", yourCode: "Tu código", yourPage: "Tu página", task: "Tu tarea:",
     check: "Revisar mi código", passed: "¡Lo lograste!", notYet: "¡Casi! Arregla lo que tiene ✗.", nextStep: "Siguiente paso →", startOver: "Empezar de nuevo",
-    tutDone: "¡Tutorial terminado! Ahora a jugar.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "¡Primero vence al jefe!", fullScreen: "Pantalla completa", exitFull: "Salir de pantalla completa", dpad: "Cruceta", gbRun: "EJECUTAR", gbStop: "ALTO", gbA: "Botón A: saltar (espacio)", gbB: "Botón B: como hacer clic en tu amigo"
+    tutDone: "¡Tutorial terminado! Ahora a jugar.", tabJs: "JavaScript", tabHtml: "HTML", needBoss: "¡Primero vence al jefe!", guideTitle: "Aprende jugando", guideStep: "Tarjeta {n} de {m}", guideDo: "Hazlo:", guideDone: "¡Bien! ✓", guideFinish: "¡Ya sabes cómo funciona!", guideFinishSub: "Ahora pon a prueba lo que aprendiste contra los monstruos.", fightMonsters: "Enfrenta a los monstruos →", skipGuide: "Saltar a los monstruos", cardsTitle: "Cómo funciona", cardsSub: "Lee con nosotros. Las tarjetas cambian solas.", pause: "Pausar", resume: "Reproducir", prev: "Anterior", next: "Siguiente", writeHtml: "Escribe HTML de verdad →", tryIt: "Pruébalo:", fullScreen: "Pantalla completa", exitFull: "Salir de pantalla completa", dpad: "Cruceta", gbRun: "EJECUTAR", gbStop: "ALTO", gbA: "Botón A: saltar (espacio)", gbB: "Botón B: como hacer clic en tu amigo"
   }
 };
 
 // Function names shown in the terminal, so ES students read Spanish code.
 export const CODE = {
-  en: { when_run: "onStart", when_key: "onKey", when_click: "onClick", when_ground: "onTouchGround", when_toy: "onTouchToy", jump: "jump", move: "move", spin: "spin", wave: "waveArms", say: "say", spawn: "spawn", gravity: "setGravity", explode: "explode", wait: "wait", repeat: "repeat", forever: "forever" },
-  es: { when_run: "alIniciar", when_key: "alPresionarTecla", when_click: "alHacerClic", when_ground: "alTocarSuelo", when_toy: "alTocarJuguete", jump: "saltar", move: "mover", spin: "girar", wave: "agitarBrazos", say: "decir", spawn: "crear", gravity: "ponerGravedad", explode: "explotar", wait: "esperar", repeat: "repetir", forever: "porSiempre" }
+  en: { when_run: "onStart", when_key: "onKey", when_click: "onClick", when_ground: "onTouchGround", when_toy: "onTouchToy", jump: "jump", move: "move", spin: "spin", wave: "waveArms", say: "say", spawn: "spawn", explode: "explode", wait: "wait", repeat: "repeat", forever: "forever" },
+  es: { when_run: "alIniciar", when_key: "alPresionarTecla", when_click: "alHacerClic", when_ground: "alTocarSuelo", when_toy: "alTocarJuguete", jump: "saltar", move: "mover", spin: "girar", wave: "agitarBrazos", say: "decir", spawn: "crear", explode: "explotar", wait: "esperar", repeat: "repetir", forever: "porSiempre" }
 };
 
 // Lesson cards (same copy as the Figma "How the game works" screen).
 export const LESSONS = [
-  { tag: "HTML", code: '<canvas id="stage"></canvas>\n<button id="run">▶ Run</button>',
-    en: ["HTML is the skeleton", "Every web page is built from HTML tags. Tags are like labeled boxes: <button> makes a button and <canvas> makes a blank drawing board. Our whole playground is one big canvas.", "Find the Run button. It's an HTML <button> tag!"],
-    es: ["HTML es el esqueleto", "Toda página web está hecha de etiquetas HTML. Son como cajas con nombre: <button> hace un botón y <canvas> hace un pizarrón en blanco. Todo nuestro patio de juegos es un gran canvas.", "Busca el botón Ejecutar. ¡Es una etiqueta HTML <button>!"] },
-  { tag: "CSS", code: ":root { --hi: #ffcd3c; }\n.btn { background: var(--hi); }",
-    en: ["CSS is the clothes", "CSS picks colors, sizes and fonts. We keep our colors in variables, like crayons with names. Change one crayon and the whole game changes color.", "Look at the yellow buttons. They all use the same crayon: --hi."],
-    es: ["CSS es la ropa", "CSS elige colores, tamaños y letras. Guardamos los colores en variables, como crayones con nombre. Cambias un crayón y todo el juego cambia de color.", "Mira los botones amarillos. Todos usan el mismo crayón: --hi."] },
-  { tag: "CSS", code: "#stage {\n  width: 100%;\n  aspect-ratio: 16 / 9;\n}",
-    en: ["Sizes that stretch", "We don't say \"exactly 800 dots wide.\" We say \"fill 100% of the space\" and \"keep a 16 by 9 shape.\" That's why the game fits a phone and a big screen.", "Make the window skinny. Does the stage shrink?"],
-    es: ["Tamaños que se estiran", "No decimos \"exactamente 800 puntos de ancho\". Decimos \"llena el 100% del espacio\" y \"mantén la forma 16 por 9\". Por eso el juego cabe en un teléfono y en una pantalla grande.", "Haz la ventana angosta. ¿Se encoge el escenario?"] },
-  { tag: "JavaScript", code: 'addEventListener("keydown", e => {\n  if (e.key === " ") jump(12);\n});',
-    en: ["JavaScript is the brain", "JavaScript decides what happens. Pressing a key is an event. The game is always listening, and when it hears the space bar, it runs your jump block.", "Change jump 12 to 30. How high can you go?"],
-    es: ["JavaScript es el cerebro", "JavaScript decide qué pasa. Presionar una tecla es un evento. El juego siempre está escuchando y, cuando oye la barra espaciadora, ejecuta tu bloque de saltar.", "Cambia saltar 12 por 30. ¿Qué tan alto llegas?"] },
-  { tag: "JavaScript", code: 'repeat(3, () => {\n  spawn("ball");\n});',
-    en: ["Blocks are code in disguise", "Every block you snap together is one line of JavaScript. \"repeat 3 times\" becomes a loop. Look at the terminal to watch your blocks turn into code.", "Add a block and find its new line in the terminal."],
-    es: ["Los bloques son código disfrazado", "Cada bloque que unes es una línea de JavaScript. \"repetir 3 veces\" se vuelve un ciclo. Mira la terminal para ver cómo tus bloques se vuelven código.", "Agrega un bloque y busca su nueva línea en la terminal."] },
-  { tag: "JavaScript", code: "engine.gravity.y = 1; // try 0 or -1",
-    en: ["Gravity is just a number", "60 times every second, the game nudges every object and pulls it down a little. Gravity 1 feels like Earth. 0 feels like space. -1 makes things fall up!", "Set gravity to 0, then fling your buddy."],
-    es: ["La gravedad es solo un número", "60 veces cada segundo, el juego mueve cada objeto y lo jala un poquito hacia abajo. Gravedad 1 se siente como la Tierra. 0 como el espacio. ¡-1 hace que todo caiga hacia arriba!", "Pon la gravedad en 0 y luego lanza a tu amigo."] },
-  { tag: "HTML", code: "ctx.drawImage(armPicture, x, y);",
-    en: ["Your drawing becomes a puppet", "When you finish a part, the game cuts it out like a sticker and pins it to the body at a joint. Then it redraws every sticker 60 times a second, so it moves.", "Draw a really long arm. What happens when you wave?"],
-    es: ["Tu dibujo se vuelve un títere", "Cuando terminas una parte, el juego la recorta como una calcomanía y la une al cuerpo en una articulación. Luego vuelve a dibujar cada calcomanía 60 veces por segundo, y así se mueve.", "Dibuja un brazo muy largo. ¿Qué pasa cuando saludas?"] }
+  { tag: "HTML", step: "run", code: '<canvas id="stage"></canvas>\n<button id="run">▶ Run</button>',
+    en: ["HTML is the skeleton", "Every web page is built from HTML tags. Tags are like labeled boxes: <button> makes a button and <canvas> makes a blank drawing board. Our whole playground is one big canvas.", "Press the green ▶ Run button. It's an HTML <button>!"],
+    es: ["HTML es el esqueleto", "Toda página web está hecha de etiquetas HTML. Son como cajas con nombre: <button> hace un botón y <canvas> hace un pizarrón en blanco. Todo nuestro patio de juegos es un gran canvas.", "Presiona el botón verde ▶ Ejecutar. ¡Es una etiqueta HTML <button>!"] },
+  { tag: "CSS", step: "bg", code: ":root { --hi: #ffcd3c; }\n.btn { background: var(--hi); }",
+    en: ["CSS is the clothes", "CSS picks colors, sizes and fonts. We keep our colors in variables, like crayons with names. Change one crayon and the whole game changes color.", "Dress up the stage: pick a different background."],
+    es: ["CSS es la ropa", "CSS elige colores, tamaños y letras. Guardamos los colores en variables, como crayones con nombre. Cambias un crayón y todo el juego cambia de color.", "Viste el escenario: elige otro fondo."] },
+  { tag: "CSS", step: "full", code: "#stage {\n  width: 100%;\n  aspect-ratio: 16 / 9;\n}",
+    en: ["Sizes that stretch", "We don't say \"exactly 800 dots wide.\" We say \"fill 100% of the space\" and \"keep a 16 by 9 shape.\" That's why the game fits a phone and a big screen.", "Tap ⛶ on the Game Boy to stretch it to the whole screen."],
+    es: ["Tamaños que se estiran", "No decimos \"exactamente 800 puntos de ancho\". Decimos \"llena el 100% del espacio\" y \"mantén la forma 16 por 9\". Por eso el juego cabe en un teléfono y en una pantalla grande.", "Toca ⛶ en el Game Boy para estirarlo a toda la pantalla."] },
+  { tag: "JavaScript", step: "key", code: 'addEventListener("keydown", e => {\n  if (e.key === " ") jump(12);\n});',
+    en: ["JavaScript is the brain", "JavaScript decides what happens. Pressing a key is an event. The game is always listening, and when it hears the space bar, it runs your jump block.", "Press the space bar or the A button to jump."],
+    es: ["JavaScript es el cerebro", "JavaScript decide qué pasa. Presionar una tecla es un evento. El juego siempre está escuchando y, cuando oye la barra espaciadora, ejecuta tu bloque de saltar.", "Presiona la barra espaciadora o el botón A para saltar."] },
+  { tag: "JavaScript", step: "html", code: 'repeat(3, () => {\n  spawn("ball");\n});',
+    en: ["Blocks are code in disguise", "Every block you snap together is one line of code. \"repeat 3 times\" becomes a loop. The terminal under the Game Boy shows your blocks as real code.", "In the terminal, switch to HTML to see your blocks as a web page."],
+    es: ["Los bloques son código disfrazado", "Cada bloque que unes es una línea de código. \"repetir 3 veces\" se vuelve un ciclo. La terminal debajo del Game Boy muestra tus bloques como código de verdad.", "En la terminal, cambia a HTML para ver tus bloques como una página web."] },
+  { tag: "JavaScript", step: "jump", code: "jump(12); // try 20",
+    en: ["Jumping is just a number", "Every block has numbers you can change. jump 12 means \"push up with power 12\". A bigger number pushes harder, so your buddy jumps higher.", "Change the jump block's 12 to 20, then jump again."],
+    es: ["Saltar es solo un número", "Cada bloque tiene números que puedes cambiar. saltar 12 quiere decir \"empuja hacia arriba con fuerza 12\". Un número más grande empuja más fuerte, y tu amigo salta más alto.", "Cambia el 12 del bloque saltar por 20 y salta otra vez."] },
+  { tag: "HTML", step: "drag", code: "ctx.drawImage(armPicture, x, y);",
+    en: ["Your drawing becomes a puppet", "When you finish a part, the game cuts it out like a sticker and pins it to the body at a joint. Then it redraws every sticker 60 times a second, so it moves.", "Grab your buddy with your finger or mouse and move it."],
+    es: ["Tu dibujo se vuelve un títere", "Cuando terminas una parte, el juego la recorta como una calcomanía y la une al cuerpo en una articulación. Luego vuelve a dibujar cada calcomanía 60 veces por segundo, y así se mueve.", "Agarra a tu amigo con el dedo o el ratón y muévelo."] }
 ];
 
 // "Level {n}" + { n: 2 } → "Level 2"

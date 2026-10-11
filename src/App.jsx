@@ -9,6 +9,7 @@ import Draw from "./components/Draw.jsx";
 import Play from "./components/Play.jsx";
 import WorldMap from "./components/Map.jsx";
 import Tutorial from "./components/Tutorial.jsx";
+import Cards from "./components/Cards.jsx";
 
 const read = (key, fallback) => { try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } };
 const write = (key, v) => { try { localStorage.setItem(key, v); } catch { /* private mode: progress lasts until the tab closes */ } };
@@ -45,7 +46,8 @@ export default function App() {
     const list = saved.filter(c => c.id !== id); setSaved(list); saveAll(list);
     if (choice.kind === "saved" && choice.id === id) setChoice({ kind: "premade", key: "robot" });
   }
-  const play = idx => { setLevelIdx(idx); setAttempt(a => a + 1); setScreen("play"); };
+  const [guided, setGuided] = useState(false); // "Let's play": the Game Boy with the How-it-works cards, then the monsters
+  const play = (idx, guide = false) => { setAsking(false); setGuided(guide); setLevelIdx(idx); setAttempt(a => a + 1); setScreen("play"); };
   function levelWon() {
     if (levelIdx + 1 > cleared) { setCleared(levelIdx + 1); write("gl-progress", levelIdx + 1); }
   }
@@ -66,12 +68,13 @@ export default function App() {
         {screen === "pick" && <Pick t={t} premade={premade} saved={saved} choice={choice} onPick={pick} bg={bg} setBg={setBg}
           onAdd={() => setScreen("draw")} onDelete={deleteCharacter} />}
         {screen === "draw" && <Draw t={t} toast={toast} onBack={() => setScreen("pick")} onDone={addCharacter} />}
-        {screen === "map" && <WorldMap t={t} lang={lang} cleared={cleared} onLevel={play} onFree={() => play(null)} onTutorial={() => go("tutorial")} />}
-        {screen === "play" && <Play key={`${levelIdx}-${attempt}`} t={t} lang={lang} parts={parts} bg={bg} setBg={setBg}
+        {screen === "map" && <WorldMap t={t} lang={lang} cleared={cleared} onLevel={play} onFree={() => play(null)} onTutorial={() => go("cards")} />}
+        {screen === "play" && <Play key={`${levelIdx}-${attempt}`} guide={guided} onMonsters={() => go("map")} t={t} lang={lang} parts={parts} bg={bg} setBg={setBg}
           level={levelIdx === null ? null : LEVELS[levelIdx]} onWin={levelWon} onRetry={() => play(levelIdx)}
           onNext={levelIdx !== null && levelIdx + 1 < LEVELS.length ? () => play(levelIdx + 1) : null}
-          onMap={() => go("map")} onChangeChar={() => go("pick")} onLearn={() => go("tutorial")} />}
-        {screen === "tutorial" && <Tutorial t={t} lang={lang} onBack={() => go("map")} onDone={() => go("map")} />}
+          onMap={() => go("map")} onChangeChar={() => go("pick")} onLearn={() => go("cards")} />}
+        {screen === "cards" && <Cards t={t} lang={lang} onPlay={() => play(null, true)} onHtml={() => go("tutorial")} />}
+        {screen === "tutorial" && <Tutorial t={t} lang={lang} onBack={() => go("cards")} onDone={() => go("map")} />}
       </main>
       {/* base-ui handles focus trapping, Esc, click-outside and returning focus to the card */}
       <Dialog.Root open={asking} onOpenChange={setAsking}>
@@ -81,8 +84,8 @@ export default function App() {
             <Dialog.Title render={<h2 />}>{fmt(t.choiceTitle, { name: charName })}</Dialog.Title>
             <Dialog.Description className="hint">{t.choiceSub}</Dialog.Description>
             <div className="choices">
-              <button className="choice go" onClick={() => go("map")}><b>{t.play}</b><small>{t.choicePlaySub}</small></button>
-              <button className="choice yel" onClick={() => go("tutorial")}><b>{t.choiceTut}</b><small>{t.choiceTutSub}</small></button>
+              <button className="choice go" onClick={() => play(null, true)}><b>{t.play}</b><small>{t.choicePlaySub}</small></button>
+              <button className="choice yel" onClick={() => go("cards")}><b>{t.choiceTut}</b><small>{t.choiceTutSub}</small></button>
             </div>
             <Dialog.Close className="mini">{t.close}</Dialog.Close>
           </Dialog.Popup>

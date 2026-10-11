@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import * as Blockly from "blockly";
 import { Dialog } from "@base-ui/react/dialog";
 import * as BlocklyEn from "blockly/msg/en";
@@ -6,7 +7,9 @@ import * as BlocklyEs from "blockly/msg/es";
 import { createSim, TOYS } from "../sim.js";
 import { SCENES } from "../scenes.js";
 import { defineBlocks, toolbox, blocklyTheme, starterScripts, createRunner, terminalLines } from "../blocks.js";
-import { fmt } from "../i18n.js";
+import { fmt, LESSONS } from "../i18n.js";
+import LessonCard from "./LessonCard.jsx";
+import { padKeys } from "../controls.js";
 import SceneThumb from "./SceneThumb.jsx";
 
 const KEYMAP = { " ": "space", ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down" };
@@ -14,22 +17,37 @@ const WS_KEY = "gl-ws";
 
 // Scratch-style layout: Blockly (palette + scripts) on the left, stage + terminal on the right.
 // level = null is free play; otherwise a level from levels.js (the parent remounts Play per attempt)
-export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, onNext, onRetry, onChangeChar, onLearn }) {
+// guide = true: the "How it works" cards walk the student through the game one step at a time, then onMonsters
+export default function Play({ t, lang, parts, bg, setBg, level, guide, onMonsters, onMap, onWin, onNext, onRetry, onChangeChar, onLearn }) {
   const stageRef = useRef(null), blocklyRef = useRef(null), stageWrapRef = useRef(null);
   const ws = useRef(null), sim = useRef(null), runner = useRef(null), live = useRef({});
   const [lines, setLines] = useState([]);
   const [mode, setMode] = useState("js");
-  const [grav, setGrav] = useState(level?.gravity ?? 1);
   const [bounce, setBounce] = useState(0.2);
   const [status, setStatus] = useState(null);
   live.current = { t, lang, mode };
 
+  // Guided cards: each card's step is checked by the thing the student actually does; a ✓ shows, then the next card.
+  const [card, setCard] = useState(0);
+  const [cardDone, setCardDone] = useState(false);
+  const guideRef = useRef({ card: 0, done: false });
+  function progress(step) {
+    const g = guideRef.current;
+    if (!guide || g.done || g.card >= LESSONS.length || LESSONS[g.card].step !== step) return;
+    g.done = true; setCardDone(true);
+    setTimeout(() => { g.card++; g.done = false; setCard(g.card); setCardDone(false); }, 1100);
+  }
+  const jumpChanged = () => ws.current?.getAllBlocks(false).some(b => b.type === "gl_jump" && Number(b.getFieldValue("N")) !== 12);
+  useEffect(() => { if (LESSONS[card]?.step === "jump" && jumpChanged()) progress("jump"); }, [card]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // physics + runner
   useEffect(() => {
     const s = createSim(stageRef.current, (evt, data) => {
-      if (evt === "win") { runner.current.stop(); setStatus({ type: "win", ...data }); onWin?.(); }
-      else if (evt === "lose") { runner.current.stop(); setStatus({ type: "lose" }); }
+      if (evt === "win") { runner.current.stop(); setStatus({ type: "win", ...data }); onWin?.(); navigator.vibrate?.([20, 40, 20]); }
+      else if (evt === "lose") { runner.current.stop(); setStatus({ type: "lose" }); navigator.vibrate?.(60); }
+      else if (evt === "hurt") navigator.vibrate?.(30); // same moment as the blink (Android; iOS ignores it)
       else if (evt === "needBoss") s.act.say(live.current.t.needBoss);
+      else if (evt === "drag") progress("drag");
       else if (evt !== "hurt" && ws.current) runner.current.fire(ws.current, evt);
     }, level);
     sim.current = s; runner.current = createRunner(s.act);
@@ -58,6 +76,7 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
     if (!saved) w.cleanUp(); // space the starter scripts out at whatever size the blocks render
     const update = () => {
       setLines(terminalLines(w, live.current.t, live.current.lang, live.current.mode));
+      if (jumpChanged()) progress("jump");
       try { localStorage.setItem(WS_KEY, JSON.stringify(Blockly.serialization.workspaces.save(w))); } catch { /* private mode */ }
     };
     w.addChangeListener(e => { if (!e.isUiEvent) update(); });
@@ -86,21 +105,66 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
     addEventListener("keydown", onKey); return () => removeEventListener("keydown", onKey);
   }, []);
 
-  const fire = (evt, key) => ws.current && runner.current.fire(ws.current, evt, key);
-  // touch buttons repeat while held, like holding a key; keyboard activation (detail 0) fires once
-  const held = useRef(null);
-  const release = () => { clearInterval(held.current); held.current = null; };
+  const fire = (evt, key) => {
+    if (evt === "run") progress("run");
+    if (evt === "key" && key === "space") progress("key");
+    return ws.current && runner.current.fire(ws.current, evt, key);
+  };
+  // Touch controls repeat while held, like holding a key. Each finger has its own loop,
+  // so holding → on the D-pad keeps running while the other thumb presses A to jump.
+  const loops = useRef(new Map());
+  const [padDirs, setPadDirs] = useState([]);
+  function press(id, keys) {
+    const cur = loops.current.get(id);
+    if (cur && cur.keys.join() === keys.join()) return;
+    if (cur) clearInterval(cur.timer);
+    loops.current.delete(id);
+    if (!keys.length) return;
+    keys.forEach(k => fire("key", k)); // respond on touch-down, not on release
+    loops.current.set(id, { keys, timer: setInterval(() => keys.forEach(k => fire("key", k)), 70) });
+  }
+  useEffect(() => () => loops.current.forEach(l => clearInterval(l.timer)), []);
+  const padAt = e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    return padKeys(((e.clientX - r.left) / r.width) * 2 - 1, ((e.clientY - r.top) / r.height) * 2 - 1);
+  };
+  const pad = {
+    onPointerDown: e => { e.preventDefault(); try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* pointer already gone */ } const k = padAt(e); press("pad" + e.pointerId, k); setPadDirs(k); },
+    onPointerMove: e => { if (!loops.current.has("pad" + e.pointerId) && !e.currentTarget.hasPointerCapture?.(e.pointerId)) return; const k = padAt(e); press("pad" + e.pointerId, k); setPadDirs(k); },
+    onPointerUp: e => { press("pad" + e.pointerId, []); setPadDirs([]); },
+    onPointerCancel: e => { press("pad" + e.pointerId, []); setPadDirs([]); },
+    onContextMenu: e => e.preventDefault()
+  };
   const hold = k => ({
-    onPointerDown: e => { e.preventDefault(); e.currentTarget.setPointerCapture?.(e.pointerId); release(); fire("key", k); held.current = setInterval(() => fire("key", k), 70); },
-    onPointerUp: release, onPointerCancel: release, onLostPointerCapture: release,
-    onClick: e => { if (e.detail === 0) fire("key", k); },
+    onPointerDown: e => { e.preventDefault(); try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* pointer already gone */ } press(k + e.pointerId, [k]); },
+    onPointerUp: e => press(k + e.pointerId, []), onPointerCancel: e => press(k + e.pointerId, []),
+    onClick: e => { if (e.detail === 0) fire("key", k); }, // keyboard activation fires once
     onContextMenu: e => e.preventDefault()
   });
-  useEffect(() => release, []);
+
+  // Full screen grows out of the Game Boy's place on the page and shrinks back along the same path.
+  // It starts from wherever the Game Boy is on screen right now, so tapping ✕ mid-way reverses smoothly.
   const [full, setFull] = useState(false);
+  const gbRef = useRef(null), flight = useRef(null);
+  function toggleFull(next) {
+    if (next) progress("full");
+    const el = gbRef.current, from = el.getBoundingClientRect(); // on-screen (presentation) position
+    flight.current?.cancel();
+    flushSync(() => setFull(next));
+    const to = el.getBoundingClientRect();
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      flight.current = el.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
+      return;
+    }
+    const s = from.width / to.width;
+    const dx = from.left + from.width / 2 - (to.left + to.width / 2), dy = from.top + from.height / 2 - (to.top + to.height / 2);
+    // critically damped feel (no overshoot): Apple's move/reposition spring, damping 1.0, response 0.4
+    flight.current = el.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${s})` }, { transform: "none" }],
+      { duration: 420, easing: "cubic-bezier(0.32, 0.72, 0, 1)" });
+  }
   useEffect(() => {
     if (!full) return;
-    const esc = e => e.key === "Escape" && setFull(false);
+    const esc = e => e.key === "Escape" && toggleFull(false);
     // everything behind the Game Boy goes inert, so Tab can't wander onto the blocks underneath
     // (a base-ui Dialog would portal the canvas elsewhere and restart the game, so this stays native)
     const behind = [...document.querySelectorAll("header, .codepane, .stagepane > :not(.gbwrap)")];
@@ -121,22 +185,31 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
           <button className="btn stop big" onClick={() => runner.current.stop()}>{t.stop}</button>
           {level
             ? <button className="btn" onClick={onRetry}>{t.tryAgain}</button>
-            : <button className="btn" onClick={() => { runner.current.stop(); setGrav(sim.current.setGravity(1)); sim.current.spawnChar(); }}>{t.reset}</button>}
+            : <button className="btn" onClick={() => { runner.current.stop(); sim.current.spawnChar(); }}>{t.reset}</button>}
           <button className="btn" onClick={onMap}>{t.backToMap}</button>
           {!level && <button className="btn" onClick={onChangeChar}>{t.newChar}</button>}
           <button className="btn yel" onClick={onLearn}>{t.learn}</button>
         </div>
+        {guide && (card < LESSONS.length
+          ? <LessonCard key={card} lesson={LESSONS[card]} n={card + 1} m={LESSONS.length} t={t} lang={lang} taskLabel={t.guideDo} done={cardDone}>
+              <button className="mini" onClick={onMonsters}>{t.skipGuide}</button>
+            </LessonCard>
+          : <div className="lesson finish" role="status">
+              <h3>{t.guideFinish}</h3>
+              <p>{t.guideFinishSub}</p>
+              <button className="btn go big" onClick={onMonsters}>{t.fightMonsters}</button>
+            </div>)}
         {level
           ? <p className="goal"><b>{level[lang][0]}</b> · {t.goal} {level[lang][1]}</p>
           : <div className="thumbs"><b>{t.background}</b>
-              {SCENES.map(s => <button key={s} className="thumb" aria-label={t["bg_" + s]} aria-pressed={bg === s} onClick={() => setBg(s)}><SceneThumb theme={s} /></button>)}
+              {SCENES.map(s => <button key={s} className="thumb" aria-label={t["bg_" + s]} aria-pressed={bg === s} onClick={() => { if (s !== bg) progress("bg"); setBg(s); }}><SceneThumb theme={s} /></button>)}
             </div>}
         {/* Game Boy shell: the same stage, with touch controls; "full" pops it over the whole screen */}
-        <div className={`gbwrap${full ? " full" : ""}`} onClick={e => full && e.target === e.currentTarget && setFull(false)}>
-          <div className="gb" role={full ? "dialog" : undefined} aria-modal={full || undefined} aria-label={full ? t.fullScreen : undefined}>
+        <div className={`gbwrap${full ? " full" : ""}`} onClick={e => full && e.target === e.currentTarget && toggleFull(false)}>
+          <div className="gb" ref={gbRef} role={full ? "dialog" : undefined} aria-modal={full || undefined} aria-label={full ? t.fullScreen : undefined}>
             <div className="gb-top">
               <span className="gb-brand">JUEGO LABS</span>
-              <button className="gb-icon" onClick={() => setFull(!full)} aria-label={full ? t.exitFull : t.fullScreen} title={full ? t.exitFull : t.fullScreen}>{full ? "✕" : "⛶"}</button>
+              <button className="gb-icon" onClick={() => toggleFull(!full)} aria-label={full ? t.exitFull : t.fullScreen} title={full ? t.exitFull : t.fullScreen}>{full ? "✕" : "⛶"}</button>
             </div>
             <div className="gb-bezel">
               <span className="gb-led" aria-hidden="true" />
@@ -159,8 +232,8 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
               </div>
             </div>
             <div className="gb-controls">
-              <div className="dpad" role="group" aria-label={t.dpad}>
-                {[["up", "▲"], ["left", "◀"], ["right", "▶"], ["down", "▼"]].map(([k, l]) => <button key={k} className={"d-" + k} aria-label={t["k_" + k]} {...hold(k)}>{l}</button>)}
+              <div className="dpad" role="group" aria-label={t.dpad} {...pad}>
+                {[["up", "▲"], ["left", "◀"], ["right", "▶"], ["down", "▼"]].map(([k, l]) => <button key={k} className={"d-" + k + (padDirs.includes(k) ? " on" : "")} aria-label={t["k_" + k]} onClick={e => { if (e.detail === 0) fire("key", k); }}>{l}</button>)}
               </div>
               <div className="ab">
                 <button className="b-btn" aria-label={t.gbB} onPointerDown={e => { e.preventDefault(); fire("click"); }} onClick={e => e.detail === 0 && fire("click")}>B</button>
@@ -178,13 +251,12 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
           <button className="mini" onClick={() => sim.current.clearToys()}>{t.clearToys}</button>
         </div>
         <div className="row">
-          <label className="rng">{t.gravity}<input type="range" min="-1" max="2" step="0.1" value={grav} onChange={e => setGrav(sim.current.setGravity(e.target.value))} /></label>
           <label className="rng">{t.bounce}<input type="range" min="0" max="1" step="0.05" value={bounce} onChange={e => { setBounce(+e.target.value); sim.current.setBounce(+e.target.value); }} /></label>
         </div>
         <p className="hint">{t.dragHint}</p>
         <div className="terminal" aria-label={t.terminalTitle}>
           <div className="bar"><i style={{ background: "#ff5f57" }} /><i style={{ background: "#febc2e" }} /><i style={{ background: "#28c840" }} /><span>{t.terminalTitle}</span>
-            <span className="tabs" role="group">{["js", "html"].map(m => <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)}>{m === "js" ? t.tabJs : t.tabHtml}</button>)}</span>
+            <span className="tabs" role="group">{["js", "html"].map(m => <button key={m} aria-pressed={mode === m} onClick={() => { setMode(m); if (m === "html") progress("html"); }}>{m === "js" ? t.tabJs : t.tabHtml}</button>)}</span>
           </div>
           <div className="lines" aria-live="polite">
             <div className="p">$ run my-scripts</div>

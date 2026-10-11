@@ -10,7 +10,7 @@ const CATS = [
   ["events", COL.event, ["gl_when_run", "gl_when_key", "gl_when_click", "gl_when_ground", "gl_when_toy"]],
   ["motion", COL.motion, ["gl_jump", "gl_move", "gl_spin"]],
   ["looks", COL.looks, ["gl_wave", "gl_say"]],
-  ["world", COL.world, ["gl_spawn", "gl_gravity", "gl_explode"]],
+  ["world", COL.world, ["gl_spawn", "gl_explode"]],
   ["control", COL.control, ["gl_wait", "gl_repeat", "gl_forever"]]
 ];
 export const EVENT_OF = { gl_when_run: "run", gl_when_key: "key", gl_when_click: "click", gl_when_ground: "ground", gl_when_toy: "toy" };
@@ -27,7 +27,7 @@ export function defineBlocks(t) {
     stmt("gl_jump", COL.motion, [num("N", 12)]), stmt("gl_move", COL.motion, [num("N", 6)]), stmt("gl_spin", COL.motion, [num("N", 0.3)]),
     stmt("gl_wave", COL.looks), stmt("gl_say", COL.looks, [{ type: "field_input", name: "TEXT", text: t.hi }]),
     stmt("gl_spawn", COL.world, [{ type: "field_dropdown", name: "TOY", options: TOYS.map(k => [t[k], k]) }]),
-    stmt("gl_gravity", COL.world, [num("N", 1)]), stmt("gl_explode", COL.world, [num("N", 1)]),
+    stmt("gl_explode", COL.world, [num("N", 1)]),
     stmt("gl_wait", COL.control, [num("N", 0.5)]),
     { ...stmt("gl_repeat", COL.control, [num("N", 3)]), message1: "%1", args1: [{ type: "input_statement", name: "DO" }] },
     { type: "gl_forever", message0: t.b_forever, message1: "%1", args1: [{ type: "input_statement", name: "DO" }], previousStatement: null, colour: COL.control }
