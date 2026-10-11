@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Icon from "./Icon.jsx";
 import { PARTS, JOINTS, S, cropParts } from "../character.js";
 import { fmt } from "../i18n.js";
 import { COLORS } from "../paint.js";
@@ -106,7 +107,7 @@ export default function Draw({ t, toast, onBack, onDone }) {
   return (
     <section>
       <label className="buddy-upload">
-        <span className="buddy-icon" aria-hidden="true">⬆</span>
+        <span className="buddy-icon"><Icon name="upload" size="26" stroke={2.8} /></span>
         <span><b>{t.uploadBuddy}</b><small>{t.uploadBuddySub}</small></span>
         <input type="file" accept="image/*" onChange={uploadBuddy} />
       </label>
@@ -130,16 +131,16 @@ export default function Draw({ t, toast, onBack, onDone }) {
             {/* top layer first, like every drawing app */}
             {[...layers].reverse().map(l => (
               <div key={l.id} className={"layer" + (l.id === active ? " on" : "")}>
-                <button className="mini eye" onClick={() => toggle(l.id)} aria-pressed={l.visible} aria-label={(l.visible ? t.hideLayer : t.showLayer) + ": " + fmt(t.layerN, { n: l.n })}>{l.visible ? "👁" : "—"}</button>
+                <button className="mini eye" onClick={() => toggle(l.id)} aria-pressed={l.visible} aria-label={(l.visible ? t.hideLayer : t.showLayer) + ": " + fmt(t.layerN, { n: l.n })}><Icon name={l.visible ? "eye" : "eyeOff"} /></button>
                 <button className="layer-name" onClick={() => setActive(l.id)} aria-pressed={l.id === active}>{fmt(t.layerN, { n: l.n })}</button>
-                <button className="mini" onClick={() => move(l.id, 1)} aria-label={t.layerUp}>↑</button>
-                <button className="mini" onClick={() => move(l.id, -1)} aria-label={t.layerDown}>↓</button>
-                <button className="mini" onClick={() => removeLayer(l.id)} disabled={layers.length === 1} aria-label={t.deleteLayer}>✕</button>
+                <button className="mini" onClick={() => move(l.id, 1)} aria-label={t.layerUp}><Icon name="arrowUp" /></button>
+                <button className="mini" onClick={() => move(l.id, -1)} aria-label={t.layerDown}><Icon name="arrowDown" /></button>
+                <button className="mini" onClick={() => removeLayer(l.id)} disabled={layers.length === 1} aria-label={t.deleteLayer}><Icon name="close" /></button>
               </div>
             ))}
           </div>
           <div className="row">
-            <button className="btn" onClick={undo} disabled={!canUndo}>↶ {t.undo}</button>
+            <button className="btn" onClick={undo} disabled={!canUndo}><Icon name="undo" /> {t.undo}</button>
             <button className="btn" onClick={fillBehind}>{t.fill}</button>
             <button className="btn" onClick={clearPart}>{t.clear}</button>
             <span className="btn file">{t.upload}<input type="file" accept="image/*" onChange={upload} /></span>
@@ -149,7 +150,7 @@ export default function Draw({ t, toast, onBack, onDone }) {
           <p className="hint">{t.emptyHint}</p>
           <div className="row">
             <button className="btn" onClick={() => (step ? setStep(step - 1) : onBack())}>{t.back}</button>
-            <button className="btn big yel" onClick={next}>{step === PARTS.length - 1 ? t.done : t.next}</button>
+            <button className="btn big yel" onClick={next}>{step === PARTS.length - 1 ? t.done : <>{t.next} <Icon name="arrowRight" /></>}</button>
           </div>
         </div>
       </div>

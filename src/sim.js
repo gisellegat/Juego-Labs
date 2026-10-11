@@ -14,6 +14,13 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, Number(v) || 0));
 export const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // onEvent(name, data): "click" | "ground" | "toy" for scripts; "win" | "lose" | "hurt" for levels
+// HUD heart (drawn as a path, centered on x, y)
+function heart(c, x, y) {
+  c.beginPath(); c.moveTo(x, y + 7);
+  c.bezierCurveTo(x - 9, y + 1, x - 8, y - 7, x - 3.5, y - 7); c.bezierCurveTo(x - 1.5, y - 7, x, y - 5.5, x, y - 4);
+  c.bezierCurveTo(x, y - 5.5, x + 1.5, y - 7, x + 3.5, y - 7); c.bezierCurveTo(x + 8, y - 7, x + 9, y + 1, x, y + 7); c.fill();
+}
+
 export function createSim(canvas, onEvent, level = null) {
   const ctx = canvas.getContext("2d");
   const css = getComputedStyle(document.documentElement), tok = n => css.getPropertyValue(n).trim();
@@ -207,7 +214,7 @@ export function createSim(canvas, onEvent, level = null) {
   function drawHud() {
     rr(10, 10, 300, 40, 12, "rgba(255,255,255,.92)");
     ctx.font = "700 22px Figtree, sans-serif"; ctx.textBaseline = "middle";
-    for (let i = 0; i < 3; i++) { ctx.fillStyle = i < hearts ? "#ff5d73" : "rgba(0,0,0,.2)"; ctx.fillText("♥", 22 + i * 26, 31); }
+    for (let i = 0; i < 3; i++) { ctx.fillStyle = i < hearts ? "#ff5d73" : "rgba(0,0,0,.2)"; heart(ctx, 30 + i * 26, 31); }
     dot(115, 30, 10, "#ffcd3c"); ctx.fillStyle = INK; ctx.fillText(`${coins}/${coinBodies.length}`, 131, 31);
     ctx.font = "600 15px Lexend, sans-serif"; ctx.fillText(title, 185, 31, 120);
   }

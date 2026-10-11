@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Icon from "./Icon.jsx";
 import { LESSONS } from "../i18n.js";
 import LessonCard from "./LessonCard.jsx";
 
@@ -32,14 +33,14 @@ export default function Cards({ t, lang, onPlay, onHtml }) {
         {!paused && !last && <div className="timer" key={"t" + i} style={{ animationDuration: EVERY + "ms" }} aria-hidden="true" />}
       </div>
       <div className="row">
-        <button className="btn" onClick={() => setI(Math.max(0, i - 1))} disabled={i === 0}>← {t.prev}</button>
-        <button className="btn" onClick={() => setPaused(!paused)} aria-pressed={paused}>{paused ? "▶ " + t.resume : "❚❚ " + t.pause}</button>
-        <button className="btn" onClick={() => setI(Math.min(LESSONS.length - 1, i + 1))} disabled={last}>{t.next} →</button>
+        <button className="btn" onClick={() => setI(Math.max(0, i - 1))} disabled={i === 0}><Icon name="arrowLeft" /> {t.prev}</button>
+        <button className="btn" onClick={() => setPaused(!paused)} aria-pressed={paused}>{paused ? <><Icon name="play" /> {t.resume}</> : <><Icon name="pause" /> {t.pause}</>}</button>
+        <button className="btn" onClick={() => setI(Math.min(LESSONS.length - 1, i + 1))} disabled={last}>{t.next} <Icon name="arrowRight" /></button>
         <span className="dots" aria-hidden="true">{LESSONS.map((_, n) => <i key={n} className={n === i ? "on" : ""} />)}</span>
       </div>
       <div className="row">
-        <button className="btn go big" onClick={onPlay}>{t.play}</button>
-        <button className="btn yel" onClick={onHtml}>{t.writeHtml}</button>
+        <button className="btn go big" onClick={onPlay}><Icon name="play" /> {t.play}</button>
+        <button className="btn yel" onClick={onHtml}>{t.writeHtml} <Icon name="arrowRight" /></button>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import Icon from "./Icon.jsx";
 import { previewFrom, S } from "../character.js";
 import SceneThumb from "./SceneThumb.jsx";
 
@@ -13,8 +14,10 @@ export default function Pick({ t, premade, saved, choice, onPick, step, setStep,
   const isOn = c => choice.kind === c.kind && (c.kind === "saved" ? choice.id === c.id : choice.key === c.key);
   return (
     <section className="pick">
-      {step === 1 && <button className="back-arrow" onClick={() => setStep(0)} aria-label={t.backToChars}>←</button>}
-      <div className="pick-track" style={{ transform: `translateX(${-100 * step}%)` }}>
+      {/* slow, hazy circles in the J-U-E-G-O colors behind both sections, with a light noise grain */}
+      <div className="haze" aria-hidden="true"><i /><i /><i /><i /><i /></div>
+      {step === 1 && <button className="back-arrow" onClick={() => setStep(0)} aria-label={t.backToChars}><Icon name="arrowLeft" size="28" stroke={3.4} /></button>}
+      <div className="pick-track" style={{ transform: `translateX(calc(${-100 * step}% - ${80 * step}px))` }}>
         <div className="pick-panel" inert={step !== 0}>
           <h2>{t.pickTitle}</h2>
           <h3>{t.premade}</h3>
@@ -31,7 +34,7 @@ export default function Pick({ t, premade, saved, choice, onPick, step, setStep,
                 <button className="card" aria-pressed={isOn({ kind: "saved", id: ch.id })} onClick={() => onPick({ kind: "saved", id: ch.id })}>
                   <Preview parts={ch.parts} /><b>{ch.name}</b>
                 </button>
-                <button className="mini del" style={{ position: "absolute", top: 6, right: 6 }} aria-label={`${t.deleteChar}: ${ch.name}`} onClick={() => onDelete(ch.id)}>✕</button>
+                <button className="mini del" style={{ position: "absolute", top: 6, right: 6 }} aria-label={`${t.deleteChar}: ${ch.name}`} onClick={() => onDelete(ch.id)}><Icon name="close" /></button>
               </div>))}
             <button className="card add" onClick={onAdd}><span className="plus" aria-hidden="true">+</span><b>{t.addNew}</b><small>{t.addNewSub}</small></button>
           </div>
@@ -43,9 +46,11 @@ export default function Pick({ t, premade, saved, choice, onPick, step, setStep,
               <button key={s + sceneVer} className="bgcard" aria-pressed={bg === s} onClick={() => setBg(s)}>
                 <SceneThumb theme={s} /><b>{t["bg_" + s]}</b>
               </button>))}
-            <button className="bgcard add" onClick={onDrawBg}><span className="plus" aria-hidden="true">✎</span><b>{t.drawBgCard}</b><small>{t.drawBgCardSub}</small></button>
+            <button className="bgcard add" onClick={onDrawBg}>
+              <span className="add-art"><Icon name="pencil" size="40" stroke={2.2} /><small>{t.drawBgCardSub}</small></span><b>{t.drawBgCard}</b>
+            </button>
           </div>
-          <div className="row"><button className="btn go big" onClick={onContinue}>{t.continue}</button></div>
+          <div className="row"><button className="btn go big" onClick={onContinue}>{t.continue} <Icon name="arrowRight" /></button></div>
         </div>
       </div>
     </section>

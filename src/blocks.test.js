@@ -15,7 +15,7 @@ function workspace(lang) {
 test("terminal shows each block next to its JavaScript, with nesting", () => {
   const lines = terminalLines(workspace("en"), T.en, "en");
   assert.deepEqual(lines.slice(0, 7), [
-    { block: "when ▶ Run clicked", code: "onStart(() => {" },
+    { block: "when Run clicked", code: "onStart(() => {" },
     { block: "  say Hi!", code: '  say("Hi!");' },
     { block: "  repeat 3 times", code: "  repeat(3, () => {" },
     { block: "    spawn Ball", code: '    spawn("ball");' },

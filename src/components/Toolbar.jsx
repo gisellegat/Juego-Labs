@@ -1,14 +1,14 @@
 import { useRef } from "react";
+import Icon from "./Icon.jsx";
 import { TOOLS, COLORS, floodFill } from "../paint.js";
 
-const ICON = { brush: "🖌", eraser: "🧽", bucket: "🪣", line: "╱" };
 
 // Brush, eraser, paint bucket and line tool, plus colors and size: the same toolbar on both drawing canvases.
 export default function Toolbar({ t, tool, setTool, color, setColor, size, setSize }) {
   return (
     <>
       <div className="toolset" role="group" aria-label={t.toolsLabel}>
-        {TOOLS.map(k => <button key={k} className="tool" aria-pressed={tool === k} onClick={() => setTool(k)}><span aria-hidden="true">{ICON[k]}</span>{t["tool_" + k]}</button>)}
+        {TOOLS.map(k => <button key={k} className="tool" aria-pressed={tool === k} onClick={() => setTool(k)}><Icon name={k} />{t["tool_" + k]}</button>)}
       </div>
       <div className="swatches">
         {COLORS.map(c => <button key={c} className="sw" style={{ background: c }} aria-label={c} aria-pressed={c === color && tool !== "eraser"}
@@ -19,7 +19,7 @@ export default function Toolbar({ t, tool, setTool, color, setColor, size, setSi
   );
 }
 
-// Pointer handlers for a drawing canvas. ctx(): the canvas being painted; at(e): pointer → canvas units;
+// Pointer handlers for a drawing canvas. ctx(): the canvas being painted; at(e): pointer position in canvas units;
 // clip(x): limits strokes (optional); inside(px, py): limits the paint bucket; snap(): saves an undo step.
 export function usePaint({ ctx, at, clip, inside, snap, tool, color, size }) {
   const s = useRef(null);

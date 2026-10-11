@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Icon from "./Icon.jsx";
 import { flushSync } from "react-dom";
 import * as Blockly from "blockly";
 import { Dialog } from "@base-ui/react/dialog";
@@ -26,7 +27,7 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
   const [status, setStatus] = useState(null);
   live.current = { t, lang, mode };
 
-  // Guided cards: each card's step is checked by the thing the student actually does; a ✓ shows, then the next card.
+  // Guided cards: each card's step is checked by the thing the student actually does; a check shows, then the next card.
   const [card, setCard] = useState(0);
   const [cardDone, setCardDone] = useState(false);
   const [intro, setIntro] = useState(true); // the card's pop-up is showing
@@ -130,7 +131,7 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
     return ws.current && runner.current.fire(ws.current, evt, key);
   };
   // Touch controls repeat while held, like holding a key. Each finger has its own loop,
-  // so holding → on the D-pad keeps running while the other thumb presses A to jump.
+  // so holding right on the D-pad keeps running while the other thumb presses A to jump.
   const loops = useRef(new Map());
   const [padDirs, setPadDirs] = useState([]);
   function press(id, keys) {
@@ -162,7 +163,7 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
   });
 
   // Full screen grows out of the Game Boy's place on the page and shrinks back along the same path.
-  // It starts from wherever the Game Boy is on screen right now, so tapping ✕ mid-way reverses smoothly.
+  // It starts from wherever the Game Boy is on screen right now, so tapping close mid-way reverses smoothly.
   const [full, setFull] = useState(false);
   const gbRef = useRef(null), flight = useRef(null);
   function toggleFull(next) {
@@ -206,20 +207,20 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
         <div className="lines" aria-live="polite">
           <div className="p">$ run my-scripts</div>
           {lines.length ? lines.map((l, i) => (
-            <div key={i} className="ln"><span className="b">{l.block}</span><span className="a">{l.block ? "→" : ""}</span><span className="c">{l.code}</span></div>
+            <div key={i} className="ln"><span className="b">{l.block}</span><span className="a">{l.block ? <Icon name="arrowRight" size="0.9em" /> : ""}</span><span className="c">{l.code}</span></div>
           )) : <div className="p">// {t.terminalEmpty}</div>}
-          <div className="cur">$ ▌</div>
+          <div className="cur">$ <span className="caret" /></div>
         </div>
       </div>
       </div>
       <div className="stagepane">
         <div className="row">
-          <button className="btn go big" onClick={() => fire("run")}>{t.run}</button>
-          <button className="btn stop big" onClick={() => runner.current.stop()}>{t.stop}</button>
+          <button className="btn go big" onClick={() => fire("run")}><Icon name="play" /> {t.run}</button>
+          <button className="btn stop big" onClick={() => runner.current.stop()}><Icon name="stop" /> {t.stop}</button>
           {level
             ? <button className="btn" onClick={onRetry}>{t.tryAgain}</button>
             : <button className="btn" onClick={() => { runner.current.stop(); sim.current.spawnChar(); }}>{t.reset}</button>}
-          <button className="btn" onClick={onMap}>{t.backToMap}</button>
+          <button className="btn" onClick={onMap}><Icon name="arrowLeft" /> {t.backToMap}</button>
           {!level && <button className="btn" onClick={onChangeChar}>{t.newChar}</button>}
           <button className="btn yel" onClick={onLearn}>{t.learn}</button>
         </div>
@@ -230,7 +231,7 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
           : <div className="lesson finish" role="status">
               <h3>{t.guideFinish}</h3>
               <p>{t.guideFinishSub}</p>
-              <button className="btn go big" onClick={onMonsters}>{t.fightMonsters}</button>
+              <button className="btn go big" onClick={onMonsters}>{t.fightMonsters} <Icon name="arrowRight" /></button>
             </div>)}
         {/* the card's pop-up: the code you're about to learn, before the game walks you through it */}
         <Dialog.Root open={!!guide && intro && card < LESSONS.length} onOpenChange={open => { if (!open) setIntro(false); }}>
@@ -239,7 +240,7 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
             <Dialog.Popup className="modal card-pop">
               <Dialog.Title render={<p className="hint" />}>{t.guideNext}</Dialog.Title>
               {card < LESSONS.length && <LessonCard lesson={LESSONS[card]} n={card + 1} m={LESSONS.length} t={t} lang={lang} taskLabel={t.guideDo} />}
-              <Dialog.Close className="btn go big">{t.guideGo}</Dialog.Close>
+              <Dialog.Close className="btn go big">{t.guideGo} <Icon name="arrowRight" /></Dialog.Close>
             </Dialog.Popup>
           </Dialog.Portal>
         </Dialog.Root>
@@ -253,7 +254,7 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
           <div className="gb" ref={gbRef} role={full ? "dialog" : undefined} aria-modal={full || undefined} aria-label={full ? t.fullScreen : undefined}>
             <div className="gb-top">
               <span className="gb-brand">JUEGO LABS</span>
-              <button className="gb-icon" onClick={() => toggleFull(!full)} aria-label={full ? t.exitFull : t.fullScreen} title={full ? t.exitFull : t.fullScreen}>{full ? "✕" : "⛶"}</button>
+              <button className="gb-icon" onClick={() => toggleFull(!full)} aria-label={full ? t.exitFull : t.fullScreen} title={full ? t.exitFull : t.fullScreen}><Icon name={full ? "close" : "fullscreen"} size="20" /></button>
             </div>
             <div className="gb-bezel">
               <span className="gb-led" aria-hidden="true" />
@@ -266,9 +267,9 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
                       <Dialog.Title render={<h2 />}>{status?.type === "win" ? t.win : t.lose}</Dialog.Title>
                       <Dialog.Description>{status?.type === "win" ? fmt(t.winCoins, status) : t.loseSub}</Dialog.Description>
                       <div className="row">
-                        {status?.type === "win" && onNext && <button className="btn go big" onClick={onNext}>{t.nextLevel}</button>}
+                        {status?.type === "win" && onNext && <button className="btn go big" onClick={onNext}>{t.nextLevel} <Icon name="arrowRight" /></button>}
                         <button className="btn" onClick={onRetry}>{status?.type === "win" ? t.replay : t.tryAgain}</button>
-                        <button className="btn" onClick={() => { setFull(false); onMap(); }}>{t.backToMap}</button>
+                        <button className="btn" onClick={() => { setFull(false); onMap(); }}><Icon name="arrowLeft" /> {t.backToMap}</button>
                       </div>
                     </Dialog.Popup>
                   </Dialog.Portal>
@@ -277,7 +278,7 @@ export default function Play({ t, lang, parts, bg, setBg, scenes, sceneVer, leve
             </div>
             <div className="gb-controls">
               <div className="dpad" role="group" aria-label={t.dpad} {...pad}>
-                {[["up", "▲"], ["left", "◀"], ["right", "▶"], ["down", "▼"]].map(([k, l]) => <button key={k} className={"d-" + k + (padDirs.includes(k) ? " on" : "")} aria-label={t["k_" + k]} onClick={e => { if (e.detail === 0) fire("key", k); }}>{l}</button>)}
+                {[["up", -90], ["left", 180], ["right", 0], ["down", 90]].map(([k, turn]) => <button key={k} className={"d-" + k + (padDirs.includes(k) ? " on" : "")} aria-label={t["k_" + k]} onClick={e => { if (e.detail === 0) fire("key", k); }}><Icon name="play" size="22" style={{ transform: "rotate(" + turn + "deg)" }} /></button>)}
               </div>
               <div className="ab">
                 <button className="b-btn" aria-label={t.gbB} onPointerDown={e => { e.preventDefault(); fire("click"); }} onClick={e => e.detail === 0 && fire("click")}>B</button>

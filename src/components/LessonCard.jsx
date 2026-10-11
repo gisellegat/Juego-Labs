@@ -1,4 +1,5 @@
 import { fmt } from "../i18n.js";
+import { CheckBadge } from "./Icon.jsx";
 
 const TAG = { HTML: "var(--tag-html)", CSS: "var(--tag-css)", JavaScript: "var(--tag-js)" };
 
@@ -17,7 +18,7 @@ export default function LessonCard({ lesson, n, m, t, lang, taskLabel, done, com
       {!compact && <p>{body}</p>}
       <pre><code>{lesson.code}</code></pre>
       <p className="try"><b>{taskLabel}</b> {task}</p>
-      {done && <p className="done-badge" role="status">{t.guideDone}</p>}
+      {done && <p className="done-badge" role="status"><CheckBadge size={28} /> {t.guideDone}</p>}
       {children}
     </article>
   );

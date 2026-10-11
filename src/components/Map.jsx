@@ -1,4 +1,5 @@
 import { LEVELS } from "../levels.js";
+import Icon, { CheckBadge } from "./Icon.jsx";
 import { fmt } from "../i18n.js";
 import SceneThumb from "./SceneThumb.jsx";
 
@@ -17,7 +18,7 @@ export default function WorldMap({ t, lang, cleared, onLevel, onFree, onTutorial
             <li key={L.id}>
               <button className="node" disabled={!open} onClick={() => onLevel(i)} aria-label={`${fmt(t.level, { n: L.id })}: ${L[lang][0]}${open ? "" : ` (${t.locked})`}`}>
                 <SceneThumb theme={L.scene} />
-                <span className="num">{done ? "★" : open ? L.id : "🔒"}</span>
+                {done ? <CheckBadge size={36} className="num badge" /> : <span className="num">{open ? L.id : <Icon name="lock" size="18" />}</span>}
                 <b>{L[lang][0]}</b>
                 <small>{done ? t.cleared : open ? fmt(t.level, { n: L.id }) : t.locked}</small>
               </button>

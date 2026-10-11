@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Icon from "./Icon.jsx";
 import { SCENES, GROUND, drawScene } from "../scenes.js";
 import { COLORS } from "../paint.js";
 import Toolbar, { usePaint } from "./Toolbar.jsx";
@@ -48,7 +49,7 @@ export default function DrawBg({ t, start, onBack, onDone }) {
             {SCENES.map(s => <button key={s} className="thumb" aria-label={t["bg_" + s]} onClick={() => startFrom(s)}><SceneThumb theme={s} /></button>)}
           </div>
           <div className="row">
-            <button className="btn" onClick={undo} disabled={!canUndo}>↶ {t.undo}</button>
+            <button className="btn" onClick={undo} disabled={!canUndo}><Icon name="undo" /> {t.undo}</button>
             <button className="btn" onClick={clearAll}>{t.clearAll}</button>
           </div>
           <div className="row">

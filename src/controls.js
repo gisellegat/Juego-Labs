@@ -1,4 +1,4 @@
-// The D-pad is one surface, like a real one: roll your thumb from → to ↗ to ↑ without lifting.
+// The D-pad is one surface, like a real one: roll your thumb from right to up-right to up without lifting.
 // dx, dy run from -1 to 1 across the pad (0, 0 is the centre). Returns the arrow keys held there.
 export function padKeys(dx, dy) {
   if (Math.hypot(dx, dy) < 0.2) return []; // small dead zone in the middle

@@ -72,7 +72,7 @@ section{display:grid;gap:18px}
 .chip{font-size:.8rem;padding:3px 10px;border-radius:999px;border:2px solid var(--line);color:var(--muted)}
 .chip.now{border-color:var(--accent);color:var(--ink);font-weight:600}
 .chip.done{border-color:var(--ink);color:var(--ink)}
-.chip.done::before{content:"✓ "}
+.chip.done::before{content:"";display:inline-block;width:.95em;height:.95em;margin-right:.3em;vertical-align:-.12em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M5%2012.5l4.5%204.5L19%207.5%22%2F%3E%3C%2Fsvg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M5%2012.5l4.5%204.5L19%207.5%22%2F%3E%3C%2Fsvg%3E") center/contain no-repeat}
 .draw{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(min(100%,300px),1fr);gap:24px;align-items:start}
 @media (max-width:860px){ .draw{grid-template-columns:minmax(0,1fr)} }
 .stack{position:relative;width:min(100%,calc(100vh - 190px));min-width:min(100%,320px);aspect-ratio:1;background:var(--panel);border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;box-shadow:4px 4px 0 var(--ink)}
@@ -196,7 +196,7 @@ input[type=range]{accent-color:var(--accent);width:min(120px,30vw)}
 .gb-sys button{transform:rotate(-22deg);border:0;border-radius:999px;background:var(--gb-dark);color:#e9e9ef;font:700 .7rem/1 var(--f-body);letter-spacing:.08em;padding:7px 14px;cursor:pointer}
 .gb button:focus-visible{outline:3px solid #ffd45e;outline-offset:2px}
 
-/* full screen: the Game Boy pops over the page; tap outside, ✕ or Esc to exit */
+/* full screen: the Game Boy pops over the page; tap outside, the close button or Esc to exit */
 .gbwrap.full{position:fixed;inset:0;z-index:1000;background:rgba(10,14,24,.8);display:grid;place-items:center;padding:12px;overflow:auto}
 .gbwrap.full .gb{width:min(100%,900px)}
 .gbwrap.full .stagewrap canvas{width:auto;height:auto;max-width:100%;max-height:calc(100vh - var(--gb-chrome));max-height:calc(100dvh - var(--gb-chrome))}
@@ -315,9 +315,9 @@ button.chip{font:inherit;font-size:.8rem;background:none;cursor:pointer}
 
 /* picked background gets a check badge (Pick cards and the Game Boy thumbnails) */
 .bgcard,.thumb{position:relative}
-.bgcard[aria-pressed="true"]::after,.thumb[aria-pressed="true"]::after{content:"✓";position:absolute;bottom:8px;right:8px;width:22px;height:22px;border-radius:50%;
-  display:grid;place-items:center;background:var(--accent);color:var(--panel);font:800 .85rem/1 var(--f-display);border:2px solid var(--panel);pointer-events:none}
-.thumb[aria-pressed="true"]::after{width:16px;height:16px;bottom:auto;top:2px;right:2px;font-size:.65rem;border-width:1px}
+.bgcard[aria-pressed="true"]::after,.thumb[aria-pressed="true"]::after,.card[aria-pressed="true"]::after{content:"";position:absolute;bottom:8px;right:8px;width:28px;height:28px;
+  background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2036%2036%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%2234%22%20height%3D%2234%22%20rx%3D%2217%22%20fill%3D%22%235BAF2B%22%20stroke%3D%22%231D2433%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M26.2031%2011.3965H24.7696C24.5686%2011.3965%2024.3779%2011.4888%2024.2548%2011.6467L15.7995%2022.3579L11.7451%2017.2207C11.6837%2017.1428%2011.6056%2017.0799%2011.5164%2017.0365C11.4273%2016.9932%2011.3295%2016.9706%2011.2303%2016.9705H9.79684C9.65944%2016.9705%209.58356%2017.1284%209.66764%2017.2351L15.2847%2024.3513C15.5472%2024.6835%2016.0517%2024.6835%2016.3163%2024.3513L26.3323%2011.659C26.4164%2011.5544%2026.3405%2011.3965%2026.2031%2011.3965Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fsvg%3E") center/contain no-repeat;pointer-events:none}
+.thumb[aria-pressed="true"]::after{width:18px;height:18px;bottom:auto;top:2px;right:2px}
 /* layers: solid rows, no hover squares on the little buttons */
 .layers{background:var(--panel)}
 .layer{background:var(--panel);border:2px solid var(--line)}
@@ -377,7 +377,7 @@ h3,.prompt,.card b,.node b,.choice b,.buddy-upload b{font-weight:500}
 /* Pick: characters and backgrounds side by side; the track slides one section over (on-screen movement: ease-in-out) */
 :root{--ease-in-out:cubic-bezier(0.77,0,0.175,1)}
 .pick{overflow-x:clip}
-.pick-track{display:flex;align-items:flex-start;transition:transform 420ms var(--ease-in-out)}
+.pick-track{display:flex;gap:80px;align-items:flex-start;transition:transform 420ms var(--ease-in-out)}
 .pick-panel{flex:0 0 100%;min-width:0;display:grid;gap:14px;align-content:start}
 .pick-panel h2,.pick-panel h3{margin-bottom:0}
 .bg-panel{padding-left:76px} /* room for the back arrow */
@@ -400,3 +400,38 @@ h3,.prompt,.card b,.node b,.choice b,.buddy-upload b{font-weight:500}
 .guide[data-tool="bucket"]{cursor:cell}
 .stack.wide{aspect-ratio:16/9;width:100%}
 @keyframes fade-in{from{opacity:0}}
+
+/* icons sit on the text line inside buttons */
+.icon{flex:none;vertical-align:-.18em}
+.btn,.tool,.choice b{display:inline-flex;align-items:center;justify-content:center;gap:.4em}
+.caret{display:inline-block;width:.55em;height:1.05em;vertical-align:-.15em;background:currentColor;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){ .caret{animation:none} }
+.node .num.badge{background:none;border:0;width:36px;height:36px}
+.card{position:relative}
+
+/* pick: a hazy, slowly drifting backdrop (ambient, decorative: long linear-ish loops, transform only) */
+.haze{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.haze i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;opacity:.55;will-change:transform;
+  animation:drift 34s ease-in-out infinite alternate}
+.haze i:nth-child(1){background:radial-gradient(circle,#ff8592 0,transparent 66%);left:-12%;top:-18%}
+.haze i:nth-child(2){background:radial-gradient(circle,#ffa36b 0,transparent 66%);right:-15%;top:-10%;animation-duration:41s;animation-delay:-9s}
+.haze i:nth-child(3){background:radial-gradient(circle,#62d69e 0,transparent 66%);left:20%;bottom:-30%;animation-duration:38s;animation-delay:-17s}
+.haze i:nth-child(4){background:radial-gradient(circle,#c7a2ff 0,transparent 66%);right:-8%;bottom:-25%;animation-duration:45s;animation-delay:-4s}
+.haze i:nth-child(5){background:radial-gradient(circle,#7aa9ff 0,transparent 66%);left:35%;top:10%;animation-duration:36s;animation-delay:-23s}
+@keyframes drift{0%{transform:translate(0,0)}33%{transform:translate(9vw,6vh)}66%{transform:translate(-6vw,10vh)}100%{transform:translate(4vw,-8vh)}}
+.haze::after{content:"";position:absolute;inset:0;opacity:.18;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%22.85%22%20numOctaves%3D%223%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20values%3D%220%200%200%200%200%20%200%200%200%200%200%20%200%200%200%200%200%20%200%200%200%20.55%200%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23n)%22%2F%3E%3C%2Fsvg%3E")}
+@media (prefers-reduced-motion:reduce){ .haze i{animation:none} }
+
+/* backgrounds: a grid that fills the screen and scrolls when there are more */
+.bg-panel .bgcards{grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:22px;
+  height:calc(100dvh - 300px);min-height:260px;overflow-y:auto;padding:6px 10px 10px 6px;align-content:start}
+/* Continue: centered and the full width of the screen (ignores the arrow's indent) */
+.bg-panel>.row{margin-left:-76px}
+.bg-panel>.row .btn{width:100%;justify-content:center}
+.back-arrow .icon{vertical-align:0}
+
+/* "Draw your own" matches the other cards: a 16:9 picture area, then its name */
+.bgcard.add{place-items:stretch;align-content:start;min-height:0}
+.bgcard.add .add-art{aspect-ratio:16/9;border-radius:8px;border:2px dashed var(--accent);display:grid;place-items:center;align-content:center;gap:6px;color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.bgcard.add .add-art small{color:var(--muted);padding-inline:10px;text-align:center}

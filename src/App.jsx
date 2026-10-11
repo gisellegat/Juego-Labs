@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Icon from "./components/Icon.jsx";
 import { flushSync } from "react-dom";
 import logo from "./assets/logo.png";
 import { Dialog } from "@base-ui/react/dialog";
@@ -26,7 +27,7 @@ export default function App() {
   const [intro, setIntro] = useState(() => { try { return !sessionStorage.getItem("gl-intro"); } catch { return true; } });
   const endIntro = () => { setIntro(false); try { sessionStorage.setItem("gl-intro", "1"); } catch { /* private mode */ } };
   // page transitions: the browser cross-slides from the old screen to the new one (instant where unsupported)
-  const setScreen = s => document.startViewTransition ? document.startViewTransition(() => flushSync(() => setScreenNow(s))) : setScreenNow(s);
+  const setScreen = s => document.startViewTransition && !document.hidden ? document.startViewTransition(() => flushSync(() => setScreenNow(s))) : setScreenNow(s);
   const [saved, setSaved] = useState([]);
   const [choice, setChoice] = useState({ kind: "premade", key: "robot" });
   const [asking, setAsking] = useState(false);
@@ -108,7 +109,7 @@ export default function App() {
             <Dialog.Title render={<h2 />}>{fmt(t.choiceTitle, { name: charName })}</Dialog.Title>
             <Dialog.Description className="hint">{t.choiceSub}</Dialog.Description>
             <div className="choices">
-              <button className="choice go" onClick={() => play(null, true)}><b>{t.play}</b><small>{t.choicePlaySub}</small></button>
+              <button className="choice go" onClick={() => play(null, true)}><b><Icon name="play" /> {t.play}</b><small>{t.choicePlaySub}</small></button>
               <button className="choice yel" onClick={() => go("cards")}><b>{t.choiceTut}</b><small>{t.choiceTutSub}</small></button>
             </div>
             <Dialog.Close className="mini">{t.close}</Dialog.Close>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Icon from "./Icon.jsx";
 import { LESSONS, fmt } from "../i18n.js";
 import { STEPS, checkStep } from "../tutorial.js";
 
@@ -37,13 +38,13 @@ export default function Tutorial({ t, lang, onDone, onBack }) {
           {result && (
             <div className={`checks ${passed ? "ok" : ""}`} role="status">
               <b>{passed ? t.passed : t.notYet}</b>
-              <ul>{result.map(([ok, en, es], n) => <li key={n} className={ok ? "ok" : "bad"}>{ok ? "✓" : "✗"} {lang === "es" ? es : en}</li>)}</ul>
+              <ul>{result.map(([ok, en, es], n) => <li key={n} className={ok ? "ok" : "bad"}><Icon name={ok ? "check" : "close"} /> {lang === "es" ? es : en}</li>)}</ul>
             </div>
           )}
           <div className="row">
             <button className="btn" onClick={() => (i ? go(i - 1) : onBack())}>{t.back}</button>
             {passed && (i < STEPS.length - 1
-              ? <button className="btn go big" onClick={() => go(i + 1)}>{t.nextStep}</button>
+              ? <button className="btn go big" onClick={() => go(i + 1)}>{t.nextStep} <Icon name="arrowRight" /></button>
               : <button className="btn go big" onClick={onDone}>{t.tutDone}</button>)}
           </div>
         </div>
