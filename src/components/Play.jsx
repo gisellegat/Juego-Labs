@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as Blockly from "blockly";
+import { Dialog } from "@base-ui/react/dialog";
 import * as BlocklyEn from "blockly/msg/en";
 import * as BlocklyEs from "blockly/msg/es";
 import { createSim, TOYS } from "../sim.js";
@@ -14,7 +15,7 @@ const WS_KEY = "gl-ws";
 // Scratch-style layout: Blockly (palette + scripts) on the left, stage + terminal on the right.
 // level = null is free play; otherwise a level from levels.js (the parent remounts Play per attempt)
 export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, onNext, onRetry, onChangeChar, onLearn }) {
-  const stageRef = useRef(null), blocklyRef = useRef(null);
+  const stageRef = useRef(null), blocklyRef = useRef(null), stageWrapRef = useRef(null);
   const ws = useRef(null), sim = useRef(null), runner = useRef(null), live = useRef({});
   const [lines, setLines] = useState([]);
   const [mode, setMode] = useState("js");
@@ -100,8 +101,12 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
   useEffect(() => {
     if (!full) return;
     const esc = e => e.key === "Escape" && setFull(false);
+    // everything behind the Game Boy goes inert, so Tab can't wander onto the blocks underneath
+    // (a base-ui Dialog would portal the canvas elsewhere and restart the game, so this stays native)
+    const behind = [...document.querySelectorAll("header, .codepane, .stagepane > :not(.gbwrap)")];
+    behind.forEach(el => { el.inert = true; });
     document.body.style.overflow = "hidden"; addEventListener("keydown", esc);
-    return () => { document.body.style.overflow = ""; removeEventListener("keydown", esc); };
+    return () => { behind.forEach(el => { el.inert = false; }); document.body.style.overflow = ""; removeEventListener("keydown", esc); };
   }, [full]);
   return (
     <section className="play">
@@ -135,19 +140,22 @@ export default function Play({ t, lang, parts, bg, setBg, level, onMap, onWin, o
             </div>
             <div className="gb-bezel">
               <span className="gb-led" aria-hidden="true" />
-              <div className="stagewrap">
+              <div className="stagewrap" ref={stageWrapRef}>
                 <canvas ref={stageRef} width="960" height="540" aria-label={level ? level[lang][0] : "Playground"} />
-                {status && (
-                  <div className="overlay" role="dialog" aria-label={status.type === "win" ? t.win : t.lose}>
-                    <h2>{status.type === "win" ? t.win : t.lose}</h2>
-                    <p>{status.type === "win" ? fmt(t.winCoins, status) : t.loseSub}</p>
-                    <div className="row">
-                      {status.type === "win" && onNext && <button className="btn go big" onClick={onNext}>{t.nextLevel}</button>}
-                      <button className="btn" onClick={onRetry}>{status.type === "win" ? t.replay : t.tryAgain}</button>
-                      <button className="btn" onClick={() => { setFull(false); onMap(); }}>{t.backToMap}</button>
-                    </div>
-                  </div>
-                )}
+                {/* base-ui: focus stays on these buttons until the player picks one; Esc and outside taps can't dismiss it */}
+                <Dialog.Root open={!!status} onOpenChange={() => {}} disablePointerDismissal>
+                  <Dialog.Portal container={stageWrapRef}>
+                    <Dialog.Popup className="overlay">
+                      <Dialog.Title render={<h2 />}>{status?.type === "win" ? t.win : t.lose}</Dialog.Title>
+                      <Dialog.Description>{status?.type === "win" ? fmt(t.winCoins, status) : t.loseSub}</Dialog.Description>
+                      <div className="row">
+                        {status?.type === "win" && onNext && <button className="btn go big" onClick={onNext}>{t.nextLevel}</button>}
+                        <button className="btn" onClick={onRetry}>{status?.type === "win" ? t.replay : t.tryAgain}</button>
+                        <button className="btn" onClick={() => { setFull(false); onMap(); }}>{t.backToMap}</button>
+                      </div>
+                    </Dialog.Popup>
+                  </Dialog.Portal>
+                </Dialog.Root>
               </div>
             </div>
             <div className="gb-controls">

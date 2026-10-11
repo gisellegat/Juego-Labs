@@ -76,6 +76,8 @@ Every push to `main` is tested, built and published to GitHub Pages by `.github/
 | Physics | Matter.js (ragdoll joints, collisions, drag-and-fling) |
 | Block coding | Google Blockly (Scratch-style "Zelos" blocks) |
 | Drawing and game rendering | HTML5 Canvas API |
+| Dialogs | base-ui (accessible popups: focus trapping, Esc, focus return) |
+| Toasts | Sonner |
 | HTML checker | The browser's built-in DOMParser; jsdom for the automated tests |
 | Fonts | Google Fonts (Baloo 2, Lexend) |
 | Hosting | GitHub Pages + GitHub Actions |

@@ -126,12 +126,13 @@ input[type=range]{accent-color:var(--accent);width:min(120px,30vw)}
 .lesson pre{margin:0;background:var(--term-bg);color:var(--term-code);border-radius:10px;padding:12px;font:.8rem/1.5 var(--f-code);white-space:pre-wrap;overflow-wrap:anywhere}
 .lesson .try{font-size:.85rem;color:var(--muted)} .lesson .try b{color:var(--accent)}
 
-#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);font-weight:600;padding:8px 16px;border-radius:999px;max-width:calc(100% - 32px);z-index:50}
 @media (prefers-reduced-motion:reduce){ .card{transition:none} }
 
 /* choice popup */
-.backdrop{position:fixed;inset:0;background:rgba(10,14,24,.55);display:grid;place-items:center;padding:16px;z-index:40}
-.modal{background:var(--panel);border:2px solid var(--ink);border-radius:var(--r);box-shadow:6px 6px 0 var(--ink);padding:clamp(16px,3vw,28px);display:grid;gap:12px;width:min(560px,100%);justify-items:center;text-align:center}
+.backdrop{position:fixed;inset:0;background:rgba(10,14,24,.55);z-index:40;transition:opacity 150ms var(--ease-out)}
+.backdrop[data-starting-style]{opacity:0}
+.backdrop[data-ending-style]{opacity:0;transition-duration:0ms}
+.modal{position:fixed;inset:0;margin:auto;height:fit-content;max-height:calc(100% - 32px);overflow:auto;z-index:41;transition:opacity 200ms var(--ease-out),transform 200ms var(--ease-out);background:var(--panel);border:2px solid var(--ink);border-radius:var(--r);box-shadow:6px 6px 0 var(--ink);padding:clamp(16px,3vw,28px);display:grid;gap:12px;width:min(560px,calc(100% - 32px));justify-items:center;text-align:center}
 .modal h2{margin:0}
 .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px;width:100%}
 .choice{font:inherit;color:var(--b-ink);border:2px solid var(--ink);border-radius:var(--r);padding:16px;display:grid;gap:6px;cursor:pointer;box-shadow:4px 4px 0 var(--ink)}
@@ -209,3 +210,16 @@ input[type=range]{accent-color:var(--accent);width:min(120px,30vw)}
   .gbwrap.full .dpad{grid-area:dpad;width:clamp(96px,16vw,140px)}
   .gbwrap.full .ab{grid-area:ab;flex-direction:column;transform:none}
 }
+
+/* base-ui dialogs: short entrance, instant exit (the user asked for it, so the system snaps) */
+:root{--ease-out:cubic-bezier(0.23,1,0.32,1)}
+.modal[data-starting-style]{opacity:0;transform:scale(0.96)}
+.modal[data-ending-style]{opacity:0;transition-duration:0ms}
+.overlay{transition:opacity 250ms var(--ease-out)}
+.overlay[data-starting-style]{opacity:0}
+.overlay h2{transition:transform 250ms var(--ease-out) 60ms}
+.overlay[data-starting-style] h2{transform:scale(0.9)}
+
+/* Sonner toasts in the house style */
+.jl-toast{background:var(--ink)!important;color:var(--paper)!important;border:0!important;border-radius:999px!important;font:600 .95rem var(--f-body)!important;justify-content:center}
+@media (prefers-reduced-motion:reduce){ .modal,.overlay h2{transition-property:opacity} }
