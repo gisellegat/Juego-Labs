@@ -6,6 +6,9 @@
   --b-ink:#1d2433; --b-world:#62d69e; --b-stop:#ff8592;
   --term-bg:#0f1420; --term-bar:#1c2436; --term-text:#d6e2ff; --term-block:#ffcd3c; --term-code:#62d69e; --term-comment:#7d8aa8;
   --tag-html:#ff9f43; --tag-css:#7aa9ff; --tag-js:#ffcd3c;
+  /* Puffin Arcade (Adobe Fonts kit mzj5fjz): Nerf = Display/XL, Regular = Display/L; Baloo 2 stands in for Circular Std */
+  --f-arcade-xl:"puffin-arcade-nerf","Baloo 2",system-ui,sans-serif;
+  --f-arcade:"puffin-arcade-regular","Baloo 2",system-ui,sans-serif;
   --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
   --f-body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-code:ui-monospace,"Roboto Mono","Cascadia Code",Consolas,monospace;
@@ -21,13 +24,13 @@ body{
 #root{padding-inline:clamp(10px,2.5vw,32px); padding-block:0 40px; max-width:2000px; margin-inline:auto}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px}
 header>div{min-width:0}
-.logo{font-family:var(--f-display);font-weight:800;font-size:clamp(1.5rem,4vw,2rem);line-height:1;margin:0}
+.logo{font-family:var(--f-arcade-xl);letter-spacing:.08em;font-weight:800;font-size:clamp(1.5rem,4vw,2rem);line-height:1;margin:0}
 .logo span{background:linear-gradient(transparent 58%,var(--hi) 58%);padding-inline:2px}
 .tag{color:var(--muted);margin:2px 0 0}
 .lang{display:inline-flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden;flex:none}
 .lang button{font:700 .95rem var(--f-display);border:0;background:var(--panel);color:var(--ink);padding:6px 14px;cursor:pointer}
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-h2{font-family:var(--f-display);font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.1;margin:.3em 0 .5em;text-wrap:balance}
+h2{font-family:var(--f-arcade);font-weight:800;font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.1;margin:.3em 0 .5em;text-wrap:balance}
 h3{font-family:var(--f-display);font-size:1.15rem;margin:0 0 8px}
 .hint{color:var(--muted);margin:0;font-size:.88rem}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
