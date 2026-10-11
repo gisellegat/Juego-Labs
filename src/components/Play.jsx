@@ -30,6 +30,26 @@ export default function Play({ t, lang, parts, bg, setBg, level, guide, onMonste
   // Guided cards: each card's step is checked by the thing the student actually does; a ✓ shows, then the next card.
   const [card, setCard] = useState(0);
   const [cardDone, setCardDone] = useState(false);
+  const [intro, setIntro] = useState(true); // the card's pop-up is showing
+  useEffect(() => { if (guide) setIntro(true); }, [card, guide]);
+  // after the pop-up, light up the exact thing the card asks the student to use
+  useEffect(() => {
+    const step = LESSONS[card]?.step;
+    if (!guide || intro || !step) return;
+    const find = {
+      run: () => document.querySelector(".stagepane .btn.go"),
+      bg: () => document.querySelector(".thumbs"),
+      full: () => document.querySelector(".gb-icon"),
+      key: () => document.querySelector(".a-btn"),
+      html: () => document.querySelectorAll(".terminal .tabs button")[1],
+      jump: () => [...document.querySelectorAll(".blocklyEditableField")].find(f => f.textContent.trim() === "12") || document.querySelector(".blockly"),
+      drag: () => document.querySelector(".stagewrap")
+    }[step];
+    const el = find?.(); if (!el) return;
+    el.classList.add("coach");
+    el.scrollIntoView?.({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    return () => el.classList.remove("coach");
+  }, [card, intro, guide]);
   const guideRef = useRef({ card: 0, done: false });
   function progress(step) {
     const g = guideRef.current;
@@ -179,6 +199,20 @@ export default function Play({ t, lang, parts, bg, setBg, level, guide, onMonste
         <div className="blockly" ref={blocklyRef} />
         <p className="hint">{t.codeHint}</p>
       </div>
+      <div className="termpane">
+      <div className="terminal" aria-label={t.terminalTitle}>
+        <div className="bar"><i style={{ background: "#ff5f57" }} /><i style={{ background: "#febc2e" }} /><i style={{ background: "#28c840" }} /><span>{t.terminalTitle}</span>
+          <span className="tabs" role="group">{["js", "html"].map(m => <button key={m} aria-pressed={mode === m} onClick={() => { setMode(m); if (m === "html") progress("html"); }}>{m === "js" ? t.tabJs : t.tabHtml}</button>)}</span>
+        </div>
+        <div className="lines" aria-live="polite">
+          <div className="p">$ run my-scripts</div>
+          {lines.length ? lines.map((l, i) => (
+            <div key={i} className="ln"><span className="b">{l.block}</span><span className="a">{l.block ? "→" : ""}</span><span className="c">{l.code}</span></div>
+          )) : <div className="p">// {t.terminalEmpty}</div>}
+          <div className="cur">$ ▌</div>
+        </div>
+      </div>
+      </div>
       <div className="stagepane">
         <div className="row">
           <button className="btn go big" onClick={() => fire("run")}>{t.run}</button>
@@ -191,7 +225,7 @@ export default function Play({ t, lang, parts, bg, setBg, level, guide, onMonste
           <button className="btn yel" onClick={onLearn}>{t.learn}</button>
         </div>
         {guide && (card < LESSONS.length
-          ? <LessonCard key={card} lesson={LESSONS[card]} n={card + 1} m={LESSONS.length} t={t} lang={lang} taskLabel={t.guideDo} done={cardDone}>
+          ? <LessonCard key={card} lesson={LESSONS[card]} n={card + 1} m={LESSONS.length} t={t} lang={lang} taskLabel={t.guideDo} done={cardDone} compact>
               <button className="mini" onClick={onMonsters}>{t.skipGuide}</button>
             </LessonCard>
           : <div className="lesson finish" role="status">
@@ -199,6 +233,17 @@ export default function Play({ t, lang, parts, bg, setBg, level, guide, onMonste
               <p>{t.guideFinishSub}</p>
               <button className="btn go big" onClick={onMonsters}>{t.fightMonsters}</button>
             </div>)}
+        {/* the card's pop-up: the code you're about to learn, before the game walks you through it */}
+        <Dialog.Root open={!!guide && intro && card < LESSONS.length} onOpenChange={open => { if (!open) setIntro(false); }}>
+          <Dialog.Portal>
+            <Dialog.Backdrop className="backdrop" />
+            <Dialog.Popup className="modal card-pop">
+              <Dialog.Title render={<p className="hint" />}>{t.guideNext}</Dialog.Title>
+              {card < LESSONS.length && <LessonCard lesson={LESSONS[card]} n={card + 1} m={LESSONS.length} t={t} lang={lang} taskLabel={t.guideDo} />}
+              <Dialog.Close className="btn go big">{t.guideGo}</Dialog.Close>
+            </Dialog.Popup>
+          </Dialog.Portal>
+        </Dialog.Root>
         {level
           ? <p className="goal"><b>{level[lang][0]}</b> · {t.goal} {level[lang][1]}</p>
           : <div className="thumbs"><b>{t.background}</b>
@@ -254,18 +299,6 @@ export default function Play({ t, lang, parts, bg, setBg, level, guide, onMonste
           <label className="rng">{t.bounce}<input type="range" min="0" max="1" step="0.05" value={bounce} onChange={e => { setBounce(+e.target.value); sim.current.setBounce(+e.target.value); }} /></label>
         </div>
         <p className="hint">{t.dragHint}</p>
-        <div className="terminal" aria-label={t.terminalTitle}>
-          <div className="bar"><i style={{ background: "#ff5f57" }} /><i style={{ background: "#febc2e" }} /><i style={{ background: "#28c840" }} /><span>{t.terminalTitle}</span>
-            <span className="tabs" role="group">{["js", "html"].map(m => <button key={m} aria-pressed={mode === m} onClick={() => { setMode(m); if (m === "html") progress("html"); }}>{m === "js" ? t.tabJs : t.tabHtml}</button>)}</span>
-          </div>
-          <div className="lines" aria-live="polite">
-            <div className="p">$ run my-scripts</div>
-            {lines.length ? lines.map((l, i) => (
-              <div key={i} className="ln"><span className="b">{l.block}</span><span className="a">{l.block ? "→" : ""}</span><span className="c">{l.code}</span></div>
-            )) : <div className="p">// {t.terminalEmpty}</div>}
-            <div className="cur">$ ▌</div>
-          </div>
-        </div>
       </div>
     </section>
   );

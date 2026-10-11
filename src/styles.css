@@ -25,7 +25,7 @@ body{
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
   background-size:28px 28px; color:var(--ink); font-family:var(--f-body); font-size:15px;
 }
-#root{padding-inline:clamp(10px,2.5vw,32px); padding-block:0 40px; max-width:1400px; margin-inline:auto}
+#root{padding-inline:clamp(10px,2.5vw,32px); padding-block:0 40px; max-width:2000px; margin-inline:auto}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px}
 header>div{min-width:0}
 .logo{font-family:var(--f-display);font-weight:800;font-size:clamp(1.5rem,4vw,2rem);line-height:1;margin:0}
@@ -248,3 +248,23 @@ input[type=range]{accent-color:var(--accent);width:min(120px,30vw)}
 .dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
 .dots i.on{background:var(--accent)}
 @media (prefers-reduced-motion:reduce){ .lesson{animation:card-fade 200ms ease-out} @keyframes card-fade{from{opacity:0}} .timer{display:none} }
+
+/* Play: Your code 40% | Terminal 20% | Game Boy 40% — the code and what it means sit side by side */
+.play{grid-template-columns:minmax(0,4fr) minmax(0,2fr) minmax(0,4fr);grid-template-areas:"code term game"}
+.codepane{grid-area:code}.termpane{grid-area:term;display:grid;min-width:0;padding-top:calc(1.15rem + 8px)}.stagepane{grid-area:game}
+.termpane .terminal{display:flex;flex-direction:column;height:clamp(380px,78vh,820px)}
+.termpane .terminal .lines{max-height:none;flex:1}
+.termpane .terminal .bar{flex-wrap:wrap}
+.termpane .terminal .ln{grid-template-columns:minmax(0,1fr);gap:0;margin-bottom:4px} /* narrow column: block on top, its code under it */
+.termpane .terminal .a{display:none}
+.termpane .terminal .c{padding-left:10px}
+@media (max-width:1000px){ .play{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"code game" "term game"} .termpane .terminal{height:clamp(260px,40vh,420px)} }
+/* guided cards: pop-up first, then a compact card and a glowing target */
+.card-pop{width:min(620px,calc(100% - 32px))}
+.card-pop .lesson{box-shadow:none;text-align:left;width:100%}
+.lesson.compact{padding:12px 14px;gap:6px}
+.lesson.compact pre{padding:8px 10px}
+.coach{outline:4px solid var(--hi)!important;outline-offset:3px;border-radius:10px;animation:coach 1.2s ease-in-out infinite}
+.blocklyEditableField.coach>rect{stroke:var(--hi);stroke-width:5px}
+@keyframes coach{50%{outline-color:var(--accent)}}
+@media (prefers-reduced-motion:reduce){ .coach{animation:none} }
