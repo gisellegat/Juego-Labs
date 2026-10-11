@@ -19,10 +19,12 @@
 [hidden]{display:none!important}
 body{
   margin:0; background:var(--paper);
-  color:var(--ink); font-family:var(--f-body); font-size:15px;
+  color:var(--ink); font-family:var(--f-body); font-size:.9375rem;
 }
-#root{padding-inline:clamp(10px,2.5vw,32px); padding-block:0 40px; max-width:2000px; margin-inline:auto}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px}
+/* every rem on the site scales with the window: 14px on a phone, 16px around 1280px, up to 19px on big screens */
+html{font-size:clamp(14px,0.42vw + 10.6px,19px)}
+#root{padding:0 40px 40px; max-width:2000px; margin-inline:auto}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-block:14px} /* toggle drops below the logo instead of running off-screen */
 header>div{min-width:0}
 .logo{font-family:var(--f-arcade-xl);letter-spacing:.08em;font-weight:800;font-size:clamp(1.5rem,4vw,2rem);line-height:1;margin:0}
 .logo img{display:block;height:clamp(48px,7vw,72px);width:auto}
@@ -338,3 +340,5 @@ header{view-transition-name:site-header}
 /* Display/M and UI/Button are Medium (500) in Figma; buttons get the style's 2% tracking */
 h3,.prompt,.card b,.node b,.choice b,.buddy-upload b{font-weight:500}
 .btn{font-weight:500;letter-spacing:.02em}
+/* phones: one column; the lesson card + Game Boy first, then your code, then the terminal */
+@media (max-width:640px){ .play{grid-template-columns:minmax(0,1fr);grid-template-areas:"game" "code" "term"} }

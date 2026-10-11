@@ -65,7 +65,7 @@ export default function App() {
           <p className="tag">{t.tagline}</p>
         </div>
         <div className="lang" role="group" aria-label="Language / Idioma">
-          {["en", "es"].map(l => <button key={l} aria-pressed={lang === l} onClick={() => setLang(l)}>{l.toUpperCase()}</button>)}
+          {["en", "es"].map(l => <button key={l} lang={l} aria-pressed={lang === l} onClick={() => setLang(l)}>{l === "en" ? "English" : "Español"}</button>)}
         </div>
       </header>
       <main>
