@@ -22,6 +22,18 @@ export default function Draw({ t, toast, onBack, onDone }) {
   const [zoom, setZoom] = useState(true);
   const [layers, setLayers] = useState([{ id: 1, n: 1, visible: true }]); // index 0 is the bottom layer
   const [active, setActive] = useState(1);
+  const history = useRef([]), [canUndo, setCanUndo] = useState(false);
+  // undo: copy the layer before each change; 15 steps of an 800×800 layer is ~38 MB
+  function snap() {
+    history.current.push({ id: active, data: ctx().getImageData(0, 0, SIZE, SIZE) });
+    if (history.current.length > 15) history.current.shift();
+    setCanUndo(true);
+  }
+  function undo() {
+    let h; while ((h = history.current.pop()) && !canvases.current[h.id]); // skip steps on deleted layers
+    if (h) canvases.current[h.id].getContext("2d").putImageData(h.data, 0, 0);
+    setCanUndo(history.current.length > 0);
+  }
   const p = PARTS[step], ctx = () => canvases.current[active].getContext("2d");
 
   useEffect(() => {
@@ -49,20 +61,21 @@ export default function Draw({ t, toast, onBack, onDone }) {
   }
   function fillBehind() {
     if (color === "erase") return;
-    const x = ctx(); x.save(); x.globalCompositeOperation = "destination-over"; x.fillStyle = color;
+    snap(); const x = ctx(); x.save(); x.globalCompositeOperation = "destination-over"; x.fillStyle = color;
     if (p.round) { x.beginPath(); x.arc((p.x + p.w / 2) * S, (p.y + p.h / 2) * S, (p.w * S) / 2 - 3, 0, 7); } else { x.beginPath(); x.roundRect(p.x * S + 3, p.y * S + 3, p.w * S - 6, p.h * S - 6, 18); }
     x.fill(); x.restore();
   }
-  function clearPart() { const x = ctx(); x.save(); outline(x, p); x.clip(); x.clearRect(p.x * S, p.y * S, p.w * S, p.h * S); x.restore(); }
+  function clearPart() { snap(); wipePart(); }
+  function wipePart() { const x = ctx(); x.save(); outline(x, p); x.clip(); x.clearRect(p.x * S, p.y * S, p.w * S, p.h * S); x.restore(); }
   const fit = (img, box) => { const sc = Math.min((box.w * S) / img.width, (box.h * S) / img.height), w = img.width * sc, h = img.height * sc; return [box.x * S + (box.w * S - w) / 2, box.y * S + (box.h * S - h) / 2, w, h]; };
   async function upload(e) {
     const f = e.target.files[0]; e.target.value = ""; if (!f) return;
-    try { const img = await loadImg(f); clearPart(); const x = ctx(); x.save(); outline(x, p); x.clip(); x.drawImage(img, ...fit(img, p)); x.restore(); } catch { toast(t.badImg); }
+    try { const img = await loadImg(f); snap(); wipePart(); const x = ctx(); x.save(); outline(x, p); x.clip(); x.drawImage(img, ...fit(img, p)); x.restore(); } catch { toast(t.badImg); }
   }
   // a whole buddy in one picture: fit it to the figure, then every part box cuts out its own piece
   async function uploadBuddy(e) {
     const f = e.target.files[0]; e.target.value = ""; if (!f) return;
-    try { const img = await loadImg(f); ctx().clearRect(0, 0, SIZE, SIZE); ctx().drawImage(img, ...fit(img, FIG)); setStep(PARTS.length - 1); toast(t.buddyPlaced); }
+    try { const img = await loadImg(f); snap(); ctx().clearRect(0, 0, SIZE, SIZE); ctx().drawImage(img, ...fit(img, FIG)); setStep(PARTS.length - 1); toast(t.buddyPlaced); }
     catch { toast(t.badImg); }
   }
   async function pickTrace(e) { const f = e.target.files[0]; e.target.value = ""; if (!f) return; try { setTrace((await loadImg(f)).src); } catch { toast(t.badImg); } }
@@ -106,7 +119,7 @@ export default function Draw({ t, toast, onBack, onDone }) {
             {trace && <img src={trace} alt="" />}
             {layers.map(l => <canvas key={l.id} ref={c => { if (c) canvases.current[l.id] = c; }} width={SIZE} height={SIZE} hidden={!l.visible} aria-hidden="true" />)}
             <canvas ref={guide} className="guide" width={SIZE} height={SIZE} aria-label={t["draw_" + p.id]}
-              onPointerDown={e => { try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* pointer gone */ } last.current = at(e); stroke(last.current, last.current); }}
+              onPointerDown={e => { try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* pointer gone */ } snap(); last.current = at(e); stroke(last.current, last.current); }}
               onPointerMove={e => { if (!last.current) return; const q = at(e); stroke(last.current, q); last.current = q; }}
               onPointerUp={() => { last.current = null; }} onPointerCancel={() => { last.current = null; }} />
           </div>
@@ -134,6 +147,7 @@ export default function Draw({ t, toast, onBack, onDone }) {
             ))}
           </div>
           <div className="row">
+            <button className="btn" onClick={undo} disabled={!canUndo}>↶ {t.undo}</button>
             <button className="btn" onClick={fillBehind}>{t.fill}</button>
             <button className="btn" onClick={clearPart}>{t.clear}</button>
             <span className="btn file">{t.upload}<input type="file" accept="image/*" onChange={upload} /></span>

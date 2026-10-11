@@ -301,7 +301,6 @@ button.chip{font:inherit;font-size:.8rem;background:none;cursor:pointer}
   .gb-icon:hover{transform:scale(1.06)}
   .lang button:not([aria-pressed="true"]):hover{background:var(--grid)}
   button.chip:hover{border-color:var(--accent);color:var(--ink)}
-  .layer-name:hover{background:var(--grid)}
 }
 /* Game Boy controls are pressed constantly while playing, so they stay instant: no transition, just a deeper press */
 .dpad button:active,.dpad button.on{filter:brightness(1.4);transform:translateY(1px)}
@@ -310,3 +309,15 @@ button.chip{font:inherit;font-size:.8rem;background:none;cursor:pointer}
 @media (prefers-reduced-motion:reduce){
   .btn:hover,.choice:hover,.card:hover,.bgcard:hover,.node:hover,.thumb:hover,.sw:hover,.gb-icon:hover{transform:none}
 }
+
+/* picked background gets a check badge (Pick cards and the Game Boy thumbnails) */
+.bgcard,.thumb{position:relative}
+.bgcard[aria-pressed="true"]::after,.thumb[aria-pressed="true"]::after{content:"✓";position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;
+  display:grid;place-items:center;background:var(--accent);color:var(--panel);font:800 .85rem/1 var(--f-display);border:2px solid var(--panel);pointer-events:none}
+.thumb[aria-pressed="true"]::after{width:16px;height:16px;top:2px;right:2px;font-size:.65rem;border-width:1px}
+/* layers: solid rows, no hover squares on the little buttons */
+.layers{background:var(--panel)}
+.layer{background:var(--panel);border:2px solid var(--line)}
+.layer.on{background:var(--panel);border-color:var(--accent);outline:0}
+.layers .mini,.layers .mini:hover,.layers .mini:active{background:none}
+.layers .mini:hover{color:var(--accent)}
