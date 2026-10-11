@@ -12,6 +12,7 @@ import Play from "./components/Play.jsx";
 import WorldMap from "./components/Map.jsx";
 import Tutorial from "./components/Tutorial.jsx";
 import Cards from "./components/Cards.jsx";
+import Intro from "./components/Intro.jsx";
 
 const read = (key, fallback) => { try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } };
 const write = (key, v) => { try { localStorage.setItem(key, v); } catch { /* private mode: progress lasts until the tab closes */ } };
@@ -20,6 +21,8 @@ const startLang = () => read("gl-lang", navigator.language.startsWith("es") ? "e
 export default function App() {
   const [lang, setLang] = useState(startLang);
   const [screen, setScreenNow] = useState("pick");
+  const [intro, setIntro] = useState(() => { try { return !sessionStorage.getItem("gl-intro"); } catch { return true; } });
+  const endIntro = () => { setIntro(false); try { sessionStorage.setItem("gl-intro", "1"); } catch { /* private mode */ } };
   // page transitions: the browser cross-slides from the old screen to the new one (instant where unsupported)
   const setScreen = s => document.startViewTransition ? document.startViewTransition(() => flushSync(() => setScreenNow(s))) : setScreenNow(s);
   const [saved, setSaved] = useState([]);
@@ -61,7 +64,7 @@ export default function App() {
     <>
       <header>
         <div>
-          <h1 className="logo"><img src={logo} alt="Juego Labs" width="1200" height="363" /></h1>
+          <h1 className="logo"><img src={logo} alt="Juego Labs" width="1134" height="347" /></h1>
           <p className="tag">{t.tagline}</p>
         </div>
         <div className="lang" role="group" aria-label="Language / Idioma">
@@ -95,6 +98,7 @@ export default function App() {
           </Dialog.Popup>
         </Dialog.Portal>
       </Dialog.Root>
+      {intro && <Intro onDone={endIntro} />}
       <Toaster position="bottom-center" duration={2600} toastOptions={{ className: "jl-toast" }} />
     </>
   );
