@@ -1,35 +1,33 @@
 # Draw, Code and Play with Juego Labs!
 
-- A video-game playground where kids draw their own character, bring it to life with code blocks, and play through levels full of monsters.
-- Made for elementary and middle school students (about ages 7–14), in **English and Spanish**.
-- A great fit for classrooms, coding clubs and home: no account, no install, works on laptops, tablets and phones.
+Juego Labs is an interactive bilingual coding playground where kids can draw their own character, bring it to life with code blocks, and play through monster-filled levels.
+My main goal was to create an open-access e-learning resource that helps students ease into coding.
+Designed with elementary and middle school students in mind, this website is a great fit for classrooms, coding clubs, and home.
+No account needed, no installation, and it works on laptops, tablets, and phones.
 
-**[▶ Play Juego Labs now](https://gisellegat.github.io/Juego-Labs/)** · [Run it on your own computer](#run-it-yourself)
+**[▶ Play Juego Labs] (https://gisellegat.github.io/Juego-Labs/)** · [Run it on your own computer](#run-it-yourself)
 
 ![Playing a level on the Game Boy, with code blocks on the left](docs/screens/level.png)
 
-## The Problem We're Solving
-
-- Most "learn to code" games hide the code: kids drag blocks but never see the HTML, CSS and JavaScript those blocks stand for.
-- Most of them are English-only, which leaves out Spanish-speaking students and their families.
-- Many need accounts, installs or fast computers, which schools don't always have.
-
-Juego Labs puts the real code right next to the blocks, in English and Spanish, in any browser, with no sign-up.
+## Why Juego Labs?
+As I researched inspiration for my design project, I realized that most bilingual coding websites are either out of date, too simplified, don't teach the code, or sell physical products aimed at toddlers.
+Additionally, growing up in a Hispanic community, computer science was rarely discussed, and I found that most of my peers weren't introduced to coding until late in high school or early in college.
+With three younger siblings, I want them to have the opportunity to explore computers. Since they are artists, I included a custom character designer in my project to motivate them by letting them see their drawings come to life on screen and then play with them.
+I was inspired by Melon Playground, a ragdoll engine where you can build your own structures. I liked the fact that it had blocks and a canvas where you could draw your own characters. I focused on teaching code, not just throwing users into the design with little to no navigation.
 
 ## How Juego Labs Works
-
-- **Make your hero.** Pick a robot, cat or astronaut, or draw your own one body part at a time. The game turns your drawing into a puppet that walks, jumps and waves, and always stays on its feet.
+After character selection, two options pop up on screen: “Let's Play” and “Tutorial”
+Let’s Play
+1. ** Pick your character** On the home screen, you can choose from three pre-made characters: a robot, a cat, or an astronaut, or you can design your own, which opens up the canvas and gives you instructions on how to design your character. You can name it, then choose from the pre-made backgrounds. From the desert to space: your character knows no bounds
 - **Snap code blocks.** Like Scratch: "when space is pressed → jump 12". A terminal right beside your code shows each block as real JavaScript or as a real HTML page.
-- **Learn on a Game Boy.** "Let's play" puts the 7 How-it-works cards next to the Game Boy. Each card asks for one thing (press Run, jump, switch the terminal to HTML…), checks that you did it, and moves on.
-- **Play on a Game Boy.** The game lives inside a Game Boy with a touch D-pad and A/B buttons. Tap ⛶ to pop it full screen on a tablet or phone; tap ✕ to go back.
+- **Learn on a Game Boy.** "Let's play" puts the 7 “How-it-works” cards next to the Game Boy. Each card asks for one thing (press Run, jump, switch the terminal to HTML…), checks that you did it, and moves on.
+- **Play on a Game Boy. **** The game lives inside a Game Boy with a touch D-pad and A/B buttons. Tap ⛶ to pop it full screen on a tablet or phone; tap ✕ to go back.
 
 ![Game Boy in full screen on a phone held sideways](docs/screens/fullscreen-phone-landscape.png)
 
-## Level Up as You Learn
-
-- **Then face the monsters.** After the last card, 6 Mario-style levels test what you learned: grab coins, stomp slimes, bats and a boss, and open a password gate with code.
-- **Levels unlock one by one**, and your stars stay saved in your browser.
-- **Tutorial** plays the same cards one by one, like a slideshow. At the end, **Write real HTML** opens 7 hands-on steps: type HTML, watch your page appear, and press "Check my code" for ✓ and ✗ feedback.
+After the last card, 6 Mario-style levels test what you learned: grab coins, stomp slimes, bats, and a boss, and open a password gate with a code.
+Tutorial
+A simple “Tutorial” option lets users learn HTML without the gaming element. This mode plays the same cards one by one, like a slideshow. At the end, **Write real HTML** opens 7 hands-on steps: type HTML, watch your page appear, and press "Check my code" for ✓ and ✗ feedback.
 
 ![World map with cleared, open and locked levels](docs/screens/map.png)
 ![Tutorial cards](docs/screens/tutorial-cards.png)
@@ -37,40 +35,29 @@ Juego Labs puts the real code right next to the blocks, in English and Spanish, 
 
 ## Who It's For
 
-- **Teachers and schools** — a free, bilingual intro to HTML, CSS and JavaScript that runs in any browser, with no logins to manage.
+- **Teachers and schools** — a free, bilingual intro to HTML, CSS, and JavaScript that runs in any browser, with no logins to manage.
 - **Students** — make a character that's truly yours, learn how real code works, and beat every level.
-
-**[▶ Play Juego Labs now](https://gisellegat.github.io/Juego-Labs/)** · [Run it on your own computer](#run-it-yourself)
-
----
 
 ## Demo video
 
 ▶ **Demo video:** _add the video link here (YouTube, Loom or a file in this repo)_
 
-## Team
+## Solo Team
 
-| Name | Role |
-|------|------|
-| _Name_ | _Role, e.g. design, code, pitch_ |
+Karla Quintanar
+B.S. Interactive Major at Kennesaw State University
+Minor in Software Engineering
 
 ## Track and challenges
 
-- **Main track:** _name the Hacklanta track here_
-- **Side challenges:** _list any side challenges, or "none"_
+- **Main track:** Creative
+- **Side challenges:** Small Business Challege by Replit
 
 ## For Hacklanta judges
-
 - **Live demo:** https://gisellegat.github.io/Juego-Labs/
 - **Skip ahead:** open https://gisellegat.github.io/Juego-Labs/#unlock to unlock all 6 levels without beating them first (reload after typing it).
 - **No test credentials needed.** There are no accounts, logins or API keys. Everything runs in the browser, and saved characters and progress stay in that browser only.
-- **Quick tour (2 minutes):**
-  1. Click a character. In the popup, choose **Let's play!**
-  2. Follow the 7 cards beside the Game Boy: press ▶ Run, pick a background, tap ⛶ (✕ or Esc exits), jump with space or **A**, switch the terminal to **HTML**, change the jump block from 12 to 20, and drag your buddy.
-  3. Click **Face the monsters →** and play **Grassy Start**: arrow keys or the D-pad to walk, space or **A** to jump, **B** to wave.
-  4. Back on the map, click **Tutorial** to watch the cards cycle, then **Write real HTML →**: type `<button>Run</button>` and press **Check my code**.
-  5. Press **ES** at the top right: everything switches to Spanish.
-- **Level 3 password:** use a "say" block with the word `open` (or `abre`) next to the gate.
+- **Level 3 password:** Use a "say" block with the word `open` (or `abre`) next to the gate.
 
 ## Run it yourself
 
@@ -101,18 +88,14 @@ Every push to `main` is tested, built and published to GitHub Pages by `.github/
 | HTML checker | The browser's built-in DOMParser; jsdom for the automated tests |
 | Fonts | Adobe Fonts (Puffin Arcade) and Google Fonts (Figtree, Lexend) |
 | Hosting | GitHub Pages + GitHub Actions |
-| Design | Figma ([design file](https://www.figma.com/design/en67Sfnugtzp8HmcmZMedS)) |
+| Design | Figma https://www.figma.com/design/en67Sfnugtzp8HmcmZMedS/Juego-Labs?node-id=0-1&t=nlMN0RcV7yQsayXP-1|
 | AI assistance | Claude Code (Anthropic) helped write code, tests and design files |
 
 - **APIs:** no outside web APIs. Only browser features (Canvas, DOMParser, localStorage).
-- **Datasets:** none. All levels, lessons and text were written for this project.
-- **Sponsor tools:** _list any Hacklanta sponsor tools you used here._
+- **Datasets:** none. I wrote all levels, lessons, and text for this project.
+- **Sponsor tools:** Adobe Illustrator, After Effects, and Fonts
 
-## What was made before Hacklanta
-
-- **Code:** none. All the code in this repo was written during Hacklanta; the full history is in the commits.
-- **Open-source libraries** (React, Vite, Matter.js, Blockly) were made by others and are used under their open-source licenses.
-- **Planning:** _note any ideas, sketches or designs made before the event here._
+No development or planning occurred before Hacklanta.
 
 ## Project layout
 
@@ -130,6 +113,7 @@ src/
   *.test.js          tests: block runner + terminal, HTML checker, English/Spanish coverage
 docs/screens/        screenshots used in this README
 ```
+
 
 ## Design notes
 
