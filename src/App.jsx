@@ -14,6 +14,7 @@ import WorldMap from "./components/Map.jsx";
 import Tutorial from "./components/Tutorial.jsx";
 import Cards from "./components/Cards.jsx";
 import Intro from "./components/Intro.jsx";
+import Welcome from "./components/Welcome.jsx";
 import DrawBg from "./components/DrawBg.jsx";
 import { SCENES, setCustomScene } from "./scenes.js";
 
@@ -24,6 +25,9 @@ const startLang = () => read("gl-lang", navigator.language.startsWith("es") ? "e
 export default function App() {
   const [lang, setLang] = useState(startLang);
   const [screen, setScreenNow] = useState("pick");
+  // first visit: the welcome questions (language, name, grade); kept in this browser afterwards
+  const [profile, setProfile] = useState(() => { try { return JSON.parse(localStorage.getItem("gl-profile")); } catch { return null; } });
+  const finishWelcome = p => { setProfile(p); write("gl-profile", JSON.stringify(p)); };
   const [intro, setIntro] = useState(() => { try { return !sessionStorage.getItem("gl-intro"); } catch { return true; } });
   const endIntro = () => { setIntro(false); try { sessionStorage.setItem("gl-intro", "1"); } catch { /* private mode */ } };
   // page transitions: the browser cross-slides from the old screen to the new one (instant where unsupported)
@@ -59,10 +63,10 @@ export default function App() {
   const parts = savedChar?.parts ?? premade[choice.key] ?? premade.robot;
   const charName = savedChar?.name ?? t[choice.key] ?? t.robot;
 
-  function pick(c) { setChoice(c); setPickStep(1); }
+  function pick(c) { setChoice(c); }
   function addCharacter(newParts, name) {
     const ch = { id: Date.now().toString(36), name, parts: newParts }, list = [...saved, ch];
-    setSaved(list); setScreen("pick"); pick({ kind: "saved", id: ch.id });
+    setSaved(list); setScreen("pick"); pick({ kind: "saved", id: ch.id }); setPickStep(1);
     if (!saveAll(list)) toast(t.noSave);
   }
   function deleteCharacter(id) {
@@ -116,6 +120,7 @@ export default function App() {
           </Dialog.Popup>
         </Dialog.Portal>
       </Dialog.Root>
+      {!profile && <Welcome t={t} lang={lang} setLang={setLang} onDone={finishWelcome} />}
       {intro && <Intro onDone={endIntro} />}
       <Toaster position="bottom-center" duration={2600} toastOptions={{ className: "jl-toast" }} />
     </>

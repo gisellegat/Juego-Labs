@@ -3,7 +3,8 @@ export const T = {
   en: {
     tagline: "Learn to code your imagination to life",
     pickTitle: "Pick a character, or add your own!",
-    premade: "Premade", mine: "My characters", backgrounds: "Pick a background", continue: "Continue", backToChars: "Back to characters",
+    premade: "Premade", mine: "My characters", backgrounds: "Pick a background", continue: "Continue", nextBtn: "Next", welcomeTitle: "Welcome", qLang: "Which language do you want to use?", qName: "What's your name?", qNamePh: "Type your name",
+    qGrade: "What grade are you in?", gradeK: "K", gradeOther: "Other", welcomeHi: "Welcome, {name}!", welcomeSub: "Let's make something together.", backToChars: "Back to characters",
     drawBgCard: "Draw your own", drawBgCardSub: "Make a background on a blank canvas.", bg_custom: "My background",
     drawBgTitle: "Draw a background", drawBgHint: "Paint the stage your buddy plays on. The dashed line is the floor.",
     startFrom: "Start from:", clearAll: "Clear all", saveBg: "Save & use it!", toolsLabel: "Tools",
@@ -47,7 +48,8 @@ export const T = {
   es: {
     tagline: "Aprende a darle vida a tu imaginación con código",
     pickTitle: "¡Elige un personaje o agrega el tuyo!",
-    premade: "Listos para jugar", mine: "Mis personajes", backgrounds: "Elige un fondo", continue: "Continuar", backToChars: "Volver a los personajes",
+    premade: "Listos para jugar", mine: "Mis personajes", backgrounds: "Elige un fondo", continue: "Continuar", nextBtn: "Siguiente", welcomeTitle: "Bienvenida", qLang: "¿En qué idioma quieres usar la app?", qName: "¿Cómo te llamas?", qNamePh: "Escribe tu nombre",
+    qGrade: "¿En qué grado estás?", gradeK: "Kínder", gradeOther: "Otro", welcomeHi: "¡Te damos la bienvenida, {name}!", welcomeSub: "Vamos a crear algo juntos.", backToChars: "Volver a los personajes",
     drawBgCard: "Dibuja el tuyo", drawBgCardSub: "Crea un fondo en un lienzo en blanco.", bg_custom: "Mi fondo",
     drawBgTitle: "Dibuja un fondo", drawBgHint: "Pinta el escenario donde juega tu amigo. La línea punteada es el suelo.",
     startFrom: "Empezar con:", clearAll: "Borrar todo", saveBg: "¡Guardar y usar!", toolsLabel: "Herramientas",

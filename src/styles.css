@@ -425,13 +425,52 @@ h3,.prompt,.card b,.node b,.choice b,.buddy-upload b{font-weight:500}
 
 /* backgrounds: a grid that fills the screen and scrolls when there are more */
 .bg-panel .bgcards{grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:22px;
-  height:calc(100dvh - 300px);min-height:260px;overflow-y:auto;padding:6px 10px 10px 6px;align-content:start}
-/* Continue: centered and the full width of the screen (ignores the arrow's indent) */
-.bg-panel>.row{margin-left:-76px}
-.bg-panel>.row .btn{width:100%;justify-content:center}
+  height:calc(100dvh - 330px);min-height:260px;overflow-y:auto;padding:6px 10px 10px 6px;align-content:start}
 .back-arrow .icon{vertical-align:0}
 
 /* "Draw your own" matches the other cards: a 16:9 picture area, then its name */
 .bgcard.add{place-items:stretch;align-content:start;min-height:0}
 .bgcard.add .add-art{aspect-ratio:16/9;border-radius:8px;border:2px dashed var(--accent);display:grid;place-items:center;align-content:center;gap:6px;color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
 .bgcard.add .add-art small{color:var(--muted);padding-inline:10px;text-align:center}
+
+/* shared sideways slider: pick sections and the welcome questions */
+.slides{display:flex;gap:80px;align-items:flex-start;transition:transform 420ms var(--ease-in-out)}
+.slides>*{flex:0 0 100%;min-width:0}
+@media (prefers-reduced-motion:reduce){ .slides{transition:none} }
+/* Next: bottom-right, 40px from the edges, the mirror of the back arrow */
+.next-btn{position:fixed;right:40px;bottom:40px;z-index:6;display:inline-flex;align-items:center;gap:.5em;font:600 1.15rem var(--f-display);
+  padding:12px 22px;border-radius:999px;border:2px solid var(--ink);background:var(--b-world);color:var(--b-ink);cursor:pointer;box-shadow:3px 3px 0 var(--ink);
+  transition:transform 160ms var(--ease-out),box-shadow 160ms var(--ease-out),opacity 150ms ease}
+.next-btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.next-btn:disabled{opacity:.45;cursor:default}
+@media (hover:hover) and (pointer:fine){ .next-btn:hover:not(:disabled){transform:translateX(3px)} }
+.pick-panel{padding-bottom:110px} /* room so Next never covers the last cards */
+
+/* welcome: a white screen over everything (under the intro), one centered question per slide */
+.welcome{position:fixed;inset:0;z-index:90;background:#fff;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;overflow-y:auto;padding:40px;transition:opacity 500ms var(--ease-out)}
+.welcome.leaving{opacity:0;pointer-events:none}
+.welcome-frame{width:min(720px,100%);min-width:0;overflow-x:clip;padding-block:24px 110px}
+.welcome-step{display:grid;gap:22px;justify-items:center;text-align:center;padding-inline:4px}
+.welcome-step h2{font-size:clamp(1.5rem,4.5vw,2.4rem);margin:0}
+.lang-pick{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;width:100%}
+.choice-big{flex:1 1 200px;max-width:300px;font:600 clamp(1.2rem,3.5vw,1.6rem) var(--f-display);padding:22px 18px;border-radius:var(--r);border:2px solid var(--ink);
+  background:var(--panel);color:var(--ink);cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform 160ms var(--ease-out),box-shadow 160ms var(--ease-out),background-color 150ms ease}
+.choice-big[aria-pressed="true"]{background:var(--accent);color:#fff}
+.choice-big:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.big-field{width:min(480px,100%);font:500 clamp(1.1rem,3.5vw,1.4rem) var(--f-body);text-align:center;padding:16px 18px;border:2px solid var(--ink);border-radius:var(--r);box-shadow:4px 4px 0 var(--ink)}
+.big-field:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.grades{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;width:min(560px,100%)}
+@media (max-width:480px){ .grades{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.grade{font:600 1.15rem var(--f-display);padding:14px 6px;border-radius:12px;border:2px solid var(--ink);background:var(--panel);color:var(--ink);cursor:pointer;box-shadow:3px 3px 0 var(--ink);
+  transition:transform 160ms var(--ease-out),box-shadow 160ms var(--ease-out),background-color 150ms ease}
+.grade[aria-pressed="true"]{background:var(--hi)}
+.grade:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.welcome-hi{font-family:var(--f-arcade);font-size:clamp(1.8rem,6vw,3.2rem)!important;animation:rise 500ms var(--ease-out) both}
+@media (max-width:600px){ .next-btn{right:20px;bottom:20px} .welcome{padding:20px} .welcome .back-arrow{left:20px} }
+/* phones: the back arrow moves to the bottom-left corner, opposite Next, so it never covers a question or a card */
+@media (max-width:600px){
+  .back-arrow{top:auto;bottom:20px;left:20px;transform:none;animation:none}
+  .back-arrow:active{transform:translate(2px,2px)}
+  .bg-panel{padding-left:0}
+  .welcome .back-arrow{left:20px}
+}
