@@ -5,7 +5,7 @@ My main goal was to create an open-access e-learning resource that helps student
 Designed with elementary and middle school students in mind, this website is a great fit for classrooms, coding clubs, and home.
 No account needed, no installation, and it works on laptops, tablets, and phones.
 
-**[▶ Play Juego Labs](https://gisellegat.github.io/Juego-Labs/)** · [Run it on your own computer](#run-it-yourself)
+**[▶ Play Juego Labs](https://karlagisq.github.io/Juego-Labs/)** · [Run it on your own computer](#run-it-yourself)
 
 ![Playing a level on the Game Boy, with code blocks on the left](docs/screens/level.png)
 
@@ -58,8 +58,8 @@ Minor in Software Engineering
 - **Side challenges:** Small Business Challenge by Replit
 
 ## For Hacklanta judges
-- **Live demo:** https://gisellegat.github.io/Juego-Labs/
-- **Skip ahead:** open https://gisellegat.github.io/Juego-Labs/#unlock to unlock all 6 levels without beating them first (reload after typing it).
+- **Live demo:** https://karlagisq.github.io/Juego-Labs/
+- **Skip ahead:** open https://karlagisq.github.io/Juego-Labs/#unlock to unlock all 6 levels without beating them first (reload after typing it).
 - **No test credentials needed.** There are no accounts, logins or API keys. Everything runs in the browser, and saved characters and progress stay in that browser only.
 - **Level 3 password:** Use a "say" block with the word `open` (or `abre`) next to the gate.
 
